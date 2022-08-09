@@ -18,7 +18,7 @@ npm i eslint@8.13.0 -DE
 
 - eslint@8.19.0
 - eslint-config-htmlacademy@6.0.0
-- webpack@5.73.0
+- webpack@5.73.0 +
 - webpack-cli@4.10.0
 - webpack-dev-server@4.9.3
 - copy-webpack-plugin@10.2.4
