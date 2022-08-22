@@ -5,37 +5,46 @@ import BoardView from '../view/board-view.js';
 import { render, RenderPosition } from '../render.js';
 
 export default class BoardPresenter {
-  boardComponent = new BoardView();
+  #boardContainer;
+  #pointModel;
 
-  init = (boardContainer, destinationModel, pointModel, offerModel) => {
-    this.boardContainer = boardContainer;
+  #boardComponent = new BoardView();
 
-    this.destinationModel = destinationModel;
-    this.boardDestinations = [...this.destinationModel.get()];
-    this.chosenDestination = this.boardDestinations[0];
+  #boardPoints;
+  #boardDestinations;
+  #boardOffers;
+  #chosenDestination;
+  #boardPoint;
+  #avaliableOffers;
+  #boardDestination;
+  #chosenOffers;
 
-    this.pointModel = pointModel;
-    this.boardPoints = [...this.pointModel.get()];
+  init = (boardContainer, pointModel) => {
+    this.#boardContainer = boardContainer;
+    this.#pointModel = pointModel;
 
-    this.offerModel = offerModel;
-    this.boardOffers = [...this.offerModel.get()];
+    this.#boardPoints = [...this.#pointModel.points];
+    this.#boardDestinations = [...this.#pointModel.destinations];
+    this.#boardOffers = [...this.#pointModel.offers];
 
-
-    render(this.boardComponent, this.boardContainer);
-
-
-    this.boardPoint = this.boardPoints.find((it) => it.id === this.chosenDestination.id);
-    this.avaliableOffers = this.boardOffers.find((it) => it.type === this.boardPoint.type).offers;
-
-    render(new EditPointView(this.chosenDestination, this.boardDestinations, this.boardPoint, this.avaliableOffers), this.boardComponent.getElement(), RenderPosition.AFTERBEGIN);
+    this.#chosenDestination = this.#boardDestinations[0];
 
 
-    for (let i = 0; i < this.boardPoints.length; i++) {
+    render(this.#boardComponent, this.#boardContainer);
 
-      this.boardDestination = this.boardDestinations.find((it) => it.id === this.boardPoints[i].destination);
-      this.chosenOffers = this.boardOffers.find((it) => it.type === this.boardPoints[i].type).offers;
 
-      render(new PointView(this.boardPoints[i], this.boardDestination, this.chosenOffers), this.boardComponent.getElement());
+    this.#boardPoint = this.#boardPoints.find((it) => it.id === this.#chosenDestination.id);
+    this.#avaliableOffers = this.#boardOffers.find((it) => it.type === this.#boardPoint.type).offers;
+
+    render(new EditPointView(this.#chosenDestination, this.#boardDestinations, this.#boardPoint, this.#avaliableOffers), this.#boardComponent.element, RenderPosition.AFTERBEGIN);
+
+
+    for (let i = 0; i < this.#boardPoints.length; i++) {
+
+      this.#boardDestination = this.#boardDestinations.find((it) => it.id === this.#boardPoints[i].destination);
+      this.#chosenOffers = this.#boardOffers.find((it) => it.type === this.#boardPoints[i].type).offers;
+
+      render(new PointView(this.#boardPoints[i], this.#boardDestination, this.#chosenOffers), this.#boardComponent.element);
     }
   };
 }
