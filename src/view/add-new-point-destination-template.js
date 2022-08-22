@@ -1,10 +1,6 @@
 const createDestinationTemplate = (description, pictures) => {
 
-  let template = '';
-
-  for (let i = 0; i < pictures.length; i++) {
-    template += `<img class="event__photo" src=${ pictures[i].src }>`;
-  }
+  const template = pictures.reduce((prev, cur) => prev.concat(`<img class="event__photo" src=${ cur.src }>`), '');
 
   return `
   <section class="event__section  event__section--destination">
@@ -21,5 +17,4 @@ const createDestinationTemplate = (description, pictures) => {
 };
 
 export { createDestinationTemplate };
-
 

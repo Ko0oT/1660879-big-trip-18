@@ -1,8 +1,5 @@
 const createDatalistOptionTemplate = (destinations) => {
-  let template = '';
-  for (let i = 0; i < destinations.length; i++) {
-    template += `<option value="${ destinations[i].name }"></option>`;
-  }
+  const template = destinations.reduce((prev, cur) => prev.concat(`<option value="${ cur.name }"></option>`), '');
   return template;
 };
 

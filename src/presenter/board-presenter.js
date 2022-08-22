@@ -20,11 +20,8 @@ export default class BoardPresenter {
     this.offerModel = offerModel;
     this.boardOffers = [...this.offerModel.get()];
 
-    //           что отрис         где отрисовывем
+
     render(this.boardComponent, this.boardContainer);
-
-
-    // render(new AddNewPointView(this.boardDestinations, this.boardPoints, this.boardOffers), this.boardComponent.getElement());
 
 
     this.boardPoint = this.boardPoints.find((it) => it.id === this.chosenDestination.id);
