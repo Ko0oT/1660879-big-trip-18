@@ -1,45 +1,89 @@
-// import AddNewPointView from '../view/add-new-point-view.js';
 import EditPointView from '../view/edit-point-view.js';
 import PointView from '../view/point-view.js';
 import BoardView from '../view/board-view.js';
-import { render, RenderPosition } from '../render.js';
+import { render } from '../render.js';
 
 export default class BoardPresenter {
-  boardComponent = new BoardView();
+  #boardContainer;
+  #pointModel;
 
-  init = (boardContainer, destinationModel, pointModel, offerModel) => {
-    this.boardContainer = boardContainer;
+  #boardComponent = new BoardView();
 
-    this.destinationModel = destinationModel;
-    this.boardDestinations = [...this.destinationModel.get()];
-    this.chosenDestination = this.boardDestinations[0];
-
-    this.pointModel = pointModel;
-    this.boardPoints = [...this.pointModel.get()];
-
-    this.offerModel = offerModel;
-    this.boardOffers = [...this.offerModel.get()];
-
-    //           что отрис         где отрисовывем
-    render(this.boardComponent, this.boardContainer);
+  #boardPoints;
+  #boardDestinations;
+  #boardOffers;
+  #chosenOffers;
+  #avaliableOffers;
+  #boardDestination;
 
 
-    // render(new AddNewPointView(this.boardDestinations, this.boardPoints, this.boardOffers), this.boardComponent.getElement());
+  init = (boardContainer, pointModel) => {
+    this.#boardContainer = boardContainer;
+    this.#pointModel = pointModel;
+
+    this.#boardPoints = [...this.#pointModel.points];
+    this.#boardDestinations = [...this.#pointModel.destinations];
+    this.#boardOffers = [...this.#pointModel.offers];
 
 
-    this.boardPoint = this.boardPoints.find((it) => it.id === this.chosenDestination.id);
-    this.avaliableOffers = this.boardOffers.find((it) => it.type === this.boardPoint.type).offers;
-
-    render(new EditPointView(this.chosenDestination, this.boardDestinations, this.boardPoint, this.avaliableOffers), this.boardComponent.getElement(), RenderPosition.AFTERBEGIN);
+    render(this.#boardComponent, this.#boardContainer);
 
 
-    for (let i = 0; i < this.boardPoints.length; i++) {
+    for (let i = 0; i < this.#boardPoints.length; i++) {
 
-      this.boardDestination = this.boardDestinations.find((it) => it.id === this.boardPoints[i].destination);
-      this.chosenOffers = this.boardOffers.find((it) => it.type === this.boardPoints[i].type).offers;
+      this.#boardDestination = this.#boardDestinations.find((it) => it.id === this.#boardPoints[i].destination);
+      this.#chosenOffers = this.#boardOffers.find((it) => it.type === this.#boardPoints[i].type).offers;
+      this.#avaliableOffers = this.#boardOffers.find((it) => it.type === this.#boardPoints[i].type).offers;
 
-      render(new PointView(this.boardPoints[i], this.boardDestination, this.chosenOffers), this.boardComponent.getElement());
+      this.#renderPoint(this.#boardPoints[i], this.#boardDestination, this.#chosenOffers, this.#boardDestinations, this.#avaliableOffers);
     }
   };
+
+
+  #renderPoint = (point, destination, chosenOffers, destinations, avaliableOffers) => {
+    const pointComponent = new PointView(point, destination, chosenOffers);
+    const editPointComponent = new EditPointView(destination, destinations, point, avaliableOffers);
+
+
+    const replacePointToForm = () => {
+      this.#boardComponent.element.replaceChild(editPointComponent.element, pointComponent.element);
+    };
+
+
+    const replaceFormToPoint = () => {
+      this.#boardComponent.element.replaceChild(pointComponent.element, editPointComponent.element);
+    };
+
+
+    const onEscKeyDown = (evt) => {
+      if (evt.key === 'Esc' || evt.key === 'Escape') {
+        evt.preventDefault();
+        replaceFormToPoint();
+        document.removeEventListener('keydown', onEscKeyDown);
+      }
+    };
+
+
+    pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+      replacePointToForm();
+      document.addEventListener('keydown', onEscKeyDown);
+    });
+
+
+    editPointComponent.element.querySelector('form').addEventListener('submit', (evt) => {
+      evt.preventDefault();
+      replaceFormToPoint();
+      document.removeEventListener('keydown', onEscKeyDown);
+    });
+
+
+    editPointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+      replaceFormToPoint();
+    });
+
+
+    render (pointComponent, this.#boardComponent.element);
+  };
+
 }
 

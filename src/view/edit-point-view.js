@@ -72,25 +72,31 @@ const createEditPointTemplate = (chosenDestination, destinations, point, avaliab
 };
 
 export default class EditPointView {
+  #element;
+  #chosenDestination;
+  #destinations;
+  #point;
+  #avaliableOffers;
+
   constructor(chosenDestination, destinations, point, avaliableOffers) {
-    this.chosenDestination = chosenDestination;
-    this.destinations = destinations;
-    this.point = point;
-    this.avaliableOffers = avaliableOffers;
+    this.#chosenDestination = chosenDestination;
+    this.#destinations = destinations;
+    this.#point = point;
+    this.#avaliableOffers = avaliableOffers;
   }
 
-  getTemplate() {
-    return createEditPointTemplate(this.chosenDestination, this.destinations, this.point, this.avaliableOffers);
+  get template() {
+    return createEditPointTemplate(this.#chosenDestination, this.#destinations, this.#point, this.#avaliableOffers);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
-    this.element = null;
+    this.#element = null;
   }
 }
