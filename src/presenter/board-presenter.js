@@ -3,7 +3,7 @@ import PointView from '../view/point-view.js';
 import BoardView from '../view/board-view.js';
 import NoPointsView from '../view/no-points-view.js';
 import SortView from '../view/sort-view.js';
-import { render } from '../render.js';
+import { render } from '../framework/render.js';
 
 export default class BoardPresenter {
   #boardContainer;
