@@ -1,7 +1,10 @@
 import EditPointView from '../view/edit-point-view.js';
 import PointView from '../view/point-view.js';
 import BoardView from '../view/board-view.js';
+import NoPointsView from '../view/no-points-view.js';
 import { render } from '../render.js';
+
+import SortView from '../view/sort-view.js';
 
 export default class BoardPresenter {
   #boardContainer;
@@ -25,17 +28,24 @@ export default class BoardPresenter {
     this.#boardDestinations = [...this.#pointModel.destinations];
     this.#boardOffers = [...this.#pointModel.offers];
 
+    if (this.#boardPoints.length === 0) {
 
-    render(this.#boardComponent, this.#boardContainer);
+      render(new NoPointsView(), this.#boardContainer);
 
+    } else {
 
-    for (let i = 0; i < this.#boardPoints.length; i++) {
+      render(this.#boardComponent, this.#boardContainer);
+      render(new SortView(), this.#boardComponent.element);
 
-      this.#boardDestination = this.#boardDestinations.find((it) => it.id === this.#boardPoints[i].destination);
-      this.#chosenOffers = this.#boardOffers.find((it) => it.type === this.#boardPoints[i].type).offers;
-      this.#avaliableOffers = this.#boardOffers.find((it) => it.type === this.#boardPoints[i].type).offers;
+      for (let i = 0; i < this.#boardPoints.length; i++) {
 
-      this.#renderPoint(this.#boardPoints[i], this.#boardDestination, this.#chosenOffers, this.#boardDestinations, this.#avaliableOffers);
+        this.#boardDestination = this.#boardDestinations.find((it) => it.id === this.#boardPoints[i].destination);
+        this.#chosenOffers = this.#boardOffers.find((it) => it.type === this.#boardPoints[i].type).offers; //надо доработать, чтобы отрисовывались только выбранные, сделаю позже
+        this.#avaliableOffers = this.#boardOffers.find((it) => it.type === this.#boardPoints[i].type).offers;
+
+        this.#renderPoint(this.#boardPoints[i], this.#boardDestination, this.#chosenOffers, this.#boardDestinations, this.#avaliableOffers);
+
+      }
     }
   };
 
