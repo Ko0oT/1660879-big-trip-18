@@ -1,11 +1,17 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { humanizeDateAndTime } from '../utils.js';
 import { types } from '../mock/constants.js';
-import { createDestinationTemplate } from './add-new-point-destination-template.js';
-import { createAvaliableOffersTemplate } from './add-new-point-avaliable-offers-template.js';
-import { createPointsMenuTemplate } from './add-new-point-points-menu-template.js';
-import { createDatalistOptionTemplate } from './add-new-point-datalist-option-template.js';
+import { createDestinationTemplate } from './edit-point-destination-template.js';
+import { createAvaliableOffersTemplate } from './edit-point-avaliable-offers-template.js';
+import { createPointsMenuTemplate } from './edit-point-points-menu-template.js';
+import { createDatalistOptionTemplate } from './edit-point-datalist-option-template.js';
 
+const BLANK_DESTINATION = {
+  id: '',
+  description: '',
+  name: '',
+  pictures: []
+};
 
 const createEditPointTemplate = (chosenDestination, destinations, point, avaliableOffers) => {
   const { description, name, pictures } = chosenDestination;
@@ -71,14 +77,14 @@ const createEditPointTemplate = (chosenDestination, destinations, point, avaliab
   );
 };
 
-export default class EditPointView {
-  #element;
+export default class EditPointView extends AbstractView {
   #chosenDestination;
   #destinations;
   #point;
   #avaliableOffers;
 
-  constructor(chosenDestination, destinations, point, avaliableOffers) {
+  constructor(chosenDestination = BLANK_DESTINATION, destinations, point, avaliableOffers) {
+    super();
     this.#chosenDestination = chosenDestination;
     this.#destinations = destinations;
     this.#point = point;
@@ -89,14 +95,23 @@ export default class EditPointView {
     return createEditPointTemplate(this.#chosenDestination, this.#destinations, this.#point, this.#avaliableOffers);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-    return this.#element;
-  }
+  setFormSubmitHandler = (callback) => {
+    this._callback.formSubmit = callback;
+    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
+  };
 
-  removeElement() {
-    this.#element = null;
-  }
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.formSubmit();
+  };
+
+  setFormClickHandler = (callback) => {
+    this._callback.formClick = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formClickHandler);
+  };
+
+  #formClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.formClick();
+  };
 }

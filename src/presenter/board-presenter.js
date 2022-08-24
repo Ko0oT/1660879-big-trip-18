@@ -3,7 +3,7 @@ import PointView from '../view/point-view.js';
 import BoardView from '../view/board-view.js';
 import NoPointsView from '../view/no-points-view.js';
 import SortView from '../view/sort-view.js';
-import { render } from '../render.js';
+import { render } from '../framework/render.js';
 
 export default class BoardPresenter {
   #boardContainer;
@@ -58,20 +58,19 @@ export default class BoardPresenter {
     };
 
 
-    pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+    pointComponent.setClickHandler(() => {
       replacePointToForm();
       document.addEventListener('keydown', onEscKeyDown);
     });
 
 
-    editPointComponent.element.querySelector('form').addEventListener('submit', (evt) => {
-      evt.preventDefault();
+    editPointComponent.setFormSubmitHandler(() => {
       replaceFormToPoint();
       document.removeEventListener('keydown', onEscKeyDown);
     });
 
 
-    editPointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+    editPointComponent.setFormClickHandler(() => {
       replaceFormToPoint();
     });
 
