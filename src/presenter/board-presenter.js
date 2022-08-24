@@ -1,6 +1,8 @@
 import EditPointView from '../view/edit-point-view.js';
 import PointView from '../view/point-view.js';
 import BoardView from '../view/board-view.js';
+import NoPointsView from '../view/no-points-view.js';
+import SortView from '../view/sort-view.js';
 import { render } from '../render.js';
 
 export default class BoardPresenter {
@@ -16,27 +18,19 @@ export default class BoardPresenter {
   #avaliableOffers;
   #boardDestination;
 
-
-  init = (boardContainer, pointModel) => {
+  constructor(boardContainer, pointModel) {
     this.#boardContainer = boardContainer;
     this.#pointModel = pointModel;
+  }
+
+
+  init = () => {
 
     this.#boardPoints = [...this.#pointModel.points];
     this.#boardDestinations = [...this.#pointModel.destinations];
     this.#boardOffers = [...this.#pointModel.offers];
 
-
-    render(this.#boardComponent, this.#boardContainer);
-
-
-    for (let i = 0; i < this.#boardPoints.length; i++) {
-
-      this.#boardDestination = this.#boardDestinations.find((it) => it.id === this.#boardPoints[i].destination);
-      this.#chosenOffers = this.#boardOffers.find((it) => it.type === this.#boardPoints[i].type).offers;
-      this.#avaliableOffers = this.#boardOffers.find((it) => it.type === this.#boardPoints[i].type).offers;
-
-      this.#renderPoint(this.#boardPoints[i], this.#boardDestination, this.#chosenOffers, this.#boardDestinations, this.#avaliableOffers);
-    }
+    this.#renderBoard();
   };
 
 
@@ -85,5 +79,27 @@ export default class BoardPresenter {
     render (pointComponent, this.#boardComponent.element);
   };
 
+
+  #renderBoard = () => {
+    if (this.#boardPoints.length === 0) {
+
+      render(new NoPointsView(), this.#boardContainer);
+
+    } else {
+
+      render(this.#boardComponent, this.#boardContainer);
+      render(new SortView(), this.#boardComponent.element);
+
+      for (let i = 0; i < this.#boardPoints.length; i++) {
+
+        this.#boardDestination = this.#boardDestinations.find((it) => it.id === this.#boardPoints[i].destination);
+        this.#chosenOffers = this.#boardOffers.find((it) => it.type === this.#boardPoints[i].type).offers; //надо доработать, чтобы отрисовывались только выбранные, сделаю позже
+        this.#avaliableOffers = this.#boardOffers.find((it) => it.type === this.#boardPoints[i].type).offers;
+
+        this.#renderPoint(this.#boardPoints[i], this.#boardDestination, this.#chosenOffers, this.#boardDestinations, this.#avaliableOffers);
+
+      }
+    }
+  };
 }
 

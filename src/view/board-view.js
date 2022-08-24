@@ -1,12 +1,12 @@
 import { createElement } from '../render.js';
 
-const createFilterTemplate = () => '<ul class="trip-events__list"></ul>';
+const createBoardTemplate = () => '<ul class="trip-events__list"></ul>';
 
 export default class BoardView {
   #element;
 
   get template() {
-    return createFilterTemplate();
+    return createBoardTemplate();
   }
 
 
