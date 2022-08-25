@@ -3,9 +3,11 @@ import PointView from '../view/point-view.js';
 import BoardView from '../view/board-view.js';
 import NoPointsView from '../view/no-points-view.js';
 import SortView from '../view/sort-view.js';
-import { render } from '../framework/render.js';
+import FilterView from '../view/filter-view.js';
+import { render, replace } from '../framework/render.js';
 
 export default class BoardPresenter {
+  #headerContainer;
   #boardContainer;
   #pointModel;
 
@@ -18,7 +20,8 @@ export default class BoardPresenter {
   #avaliableOffers;
   #boardDestination;
 
-  constructor(boardContainer, pointModel) {
+  constructor(headerContainer, boardContainer, pointModel) {
+    this.#headerContainer = headerContainer;
     this.#boardContainer = boardContainer;
     this.#pointModel = pointModel;
   }
@@ -30,6 +33,7 @@ export default class BoardPresenter {
     this.#boardDestinations = [...this.#pointModel.destinations];
     this.#boardOffers = [...this.#pointModel.offers];
 
+    this.#renderHeader(this.#boardPoints);
     this.#renderBoard();
   };
 
@@ -40,12 +44,12 @@ export default class BoardPresenter {
 
 
     const replacePointToForm = () => {
-      this.#boardComponent.element.replaceChild(editPointComponent.element, pointComponent.element);
+      replace(editPointComponent, pointComponent);
     };
 
 
     const replaceFormToPoint = () => {
-      this.#boardComponent.element.replaceChild(pointComponent.element, editPointComponent.element);
+      replace(pointComponent, editPointComponent);
     };
 
 
@@ -100,5 +104,10 @@ export default class BoardPresenter {
       }
     }
   };
+
+  #renderHeader = (points) => {
+    render(new FilterView(points), this.#headerContainer);
+  };
+
 }
 
