@@ -6,10 +6,9 @@ const generateDiscription = () => {
   return descriptions[randomIndex];
 };
 
-const generateCity = () => {
-  const randomIndex = getRandomInteger(0, cities.length - 1);
-  return cities[randomIndex];
-};
+let id = 0;
+const generateCity = () => cities[id];
+
 
 const generatePicSource = () => {
   const randomIndex = getRandomInteger(0, pics.length - 1);
@@ -23,7 +22,6 @@ const generatePicture = () => (
   }
 );
 
-let id = 1;
 
 export const generateDestination = () => (
   {

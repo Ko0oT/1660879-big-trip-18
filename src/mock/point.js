@@ -6,7 +6,7 @@ const generateType = () => {
   return types[randomIndex];
 };
 
-let id = 1;
+let id = 0;
 
 export const generatePoint = () => (
   {

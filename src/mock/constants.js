@@ -21,7 +21,21 @@ const cities = [
   'Yakutsk',
   'Novosibirsk',
   'Oha',
-  'Kaliningrad'
+  'Kaliningrad',
+  'London',
+  'Berlin',
+  'Chicago',
+  'Amsterdam',
+  'New York',
+  'Tokio',
+  'Los Angeles',
+  'Stockholm',
+  'Madrid',
+  'Barcelona',
+  'Stambul',
+  'Rome',
+  'Prague',
+  'Sydney'
 ];
 
 //Тип точки маршрута
