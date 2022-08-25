@@ -4,9 +4,11 @@ import BoardView from '../view/board-view.js';
 import NoPointsView from '../view/no-points-view.js';
 import SortView from '../view/sort-view.js';
 import FilterView from '../view/filter-view.js';
-import { render, replace } from '../framework/render.js';
+import HeaderInfoView from '../view/header-info-view.js';
+import { render, replace, RenderPosition } from '../framework/render.js';
 
 export default class BoardPresenter {
+  #infoContainer;
   #headerContainer;
   #boardContainer;
   #pointModel;
@@ -19,8 +21,10 @@ export default class BoardPresenter {
   #chosenOffers;
   #avaliableOffers;
   #boardDestination;
+  #allChosenOffers = [];
 
-  constructor(headerContainer, boardContainer, pointModel) {
+  constructor(infoContainer, headerContainer, boardContainer, pointModel) {
+    this.#infoContainer = infoContainer;
     this.#headerContainer = headerContainer;
     this.#boardContainer = boardContainer;
     this.#pointModel = pointModel;
@@ -33,8 +37,8 @@ export default class BoardPresenter {
     this.#boardDestinations = [...this.#pointModel.destinations];
     this.#boardOffers = [...this.#pointModel.offers];
 
-    this.#renderHeader(this.#boardPoints);
     this.#renderBoard();
+    this.#renderHeader(this.#boardPoints, this.#boardDestinations, this.#allChosenOffers);
   };
 
 
@@ -97,6 +101,8 @@ export default class BoardPresenter {
 
         this.#boardDestination = this.#boardDestinations.find((it) => it.id === this.#boardPoints[i].destination);
         this.#chosenOffers = this.#boardOffers.find((it) => it.type === this.#boardPoints[i].type).offers; //надо доработать, чтобы отрисовывались только выбранные, сделаю позже
+        this.#allChosenOffers = this.#allChosenOffers.concat(this.#chosenOffers); //для подсчёта общей стомости выбранных офферов
+
         this.#avaliableOffers = this.#boardOffers.find((it) => it.type === this.#boardPoints[i].type).offers;
 
         this.#renderPoint(this.#boardPoints[i], this.#boardDestination, this.#chosenOffers, this.#boardDestinations, this.#avaliableOffers);
@@ -105,9 +111,13 @@ export default class BoardPresenter {
     }
   };
 
-  #renderHeader = (points) => {
-    render(new FilterView(points), this.#headerContainer);
-  };
+  #renderHeader = (points, destinations, allChosenOffers) => {
 
+    if (this.#boardPoints.length > 0) {
+      render(new HeaderInfoView(points, destinations, allChosenOffers), this.#infoContainer, RenderPosition.AFTERBEGIN);
+      render(new FilterView(points), this.#headerContainer);
+    }
+
+  };
 }
 
