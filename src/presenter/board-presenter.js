@@ -14,6 +14,8 @@ export default class BoardPresenter {
   #pointModel;
 
   #boardComponent = new BoardView();
+  #noPointComponent = new NoPointsView();
+  #sortComponent = new SortView();
 
   #boardPoints;
   #boardDestinations;
@@ -86,28 +88,31 @@ export default class BoardPresenter {
     render (pointComponent, this.#boardComponent.element);
   };
 
+  #renderPoints = () => {
+
+    for (let i = 0; i < this.#boardPoints.length; i++) {
+
+      this.#boardDestination = this.#boardDestinations.find((it) => it.id === this.#boardPoints[i].destination);
+      this.#chosenOffers = this.#boardOffers.find((it) => it.type === this.#boardPoints[i].type).offers; //надо доработать, чтобы отрисовывались только выбранные, сделаю позже
+      this.#allChosenOffers = this.#allChosenOffers.concat(this.#chosenOffers); //для подсчёта общей стомости выбранных офферов
+
+      this.#avaliableOffers = this.#boardOffers.find((it) => it.type === this.#boardPoints[i].type).offers;
+
+      this.#renderPoint(this.#boardPoints[i], this.#boardDestination, this.#chosenOffers, this.#boardDestinations, this.#avaliableOffers);
+
+    }
+  };
 
   #renderBoard = () => {
     if (this.#boardPoints.length === 0) {
 
-      render(new NoPointsView(), this.#boardContainer);
+      this.#renderNoPoints();
 
     } else {
 
       render(this.#boardComponent, this.#boardContainer);
-      render(new SortView(), this.#boardComponent.element);
-
-      for (let i = 0; i < this.#boardPoints.length; i++) {
-
-        this.#boardDestination = this.#boardDestinations.find((it) => it.id === this.#boardPoints[i].destination);
-        this.#chosenOffers = this.#boardOffers.find((it) => it.type === this.#boardPoints[i].type).offers; //надо доработать, чтобы отрисовывались только выбранные, сделаю позже
-        this.#allChosenOffers = this.#allChosenOffers.concat(this.#chosenOffers); //для подсчёта общей стомости выбранных офферов
-
-        this.#avaliableOffers = this.#boardOffers.find((it) => it.type === this.#boardPoints[i].type).offers;
-
-        this.#renderPoint(this.#boardPoints[i], this.#boardDestination, this.#chosenOffers, this.#boardDestinations, this.#avaliableOffers);
-
-      }
+      this.#renderSort();
+      this.#renderPoints();
     }
   };
 
@@ -119,5 +124,12 @@ export default class BoardPresenter {
     }
 
   };
-}
 
+  #renderNoPoints = () => {
+    render(this.#noPointComponent, this.#boardContainer);
+  };
+
+  #renderSort = () => {
+    render(this.#sortComponent, this.#boardComponent.element);
+  };
+}
