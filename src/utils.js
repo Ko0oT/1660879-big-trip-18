@@ -40,5 +40,60 @@ const ucFirst = (str) => {
   return str[0].toUpperCase() + str.slice(1);
 };
 
+const getDates = (pointsArr) => {
+  const dateA = pointsArr[0].dateFrom;
+  const dateB = pointsArr[pointsArr.length - 1].dateTo;
 
-export { getRandomInteger, humanizeDate, humanizeTime, getTimeDiff, ucFirst, humanizeDateAndTime };
+  if (dayjs(dateA).isSame(dayjs(dateB), 'day')) {
+    return `${dayjs(dateA).format('MMM D')}`;
+  }
+
+  if (dayjs(dateA).isSame(dayjs(dateB), 'month')) {
+    return `${dayjs(dateA).format('MMM D')} &mdash; ${dayjs(dateB).format('D')}`;
+  }
+
+  return `${dayjs(dateA).format('MMM D')} &mdash; ${dayjs(dateB).format('MMM D')}`;
+};
+
+const getCityNames = (pointsArr, destArr) => {
+  const result = [];
+  let repeat = null;
+  pointsArr.forEach((el)=>{
+    if(el.id !== repeat){
+      result.push(el.id);
+      repeat = el.id;
+    }
+  });
+
+  if (result.length === 1) {
+    const cityA = destArr.find((it) => it.id === result[0]);
+    return cityA.name;
+  }
+
+  if (result.length === 2) {
+    const cityA = destArr.find((it) => it.id === result[0]);
+    const cityB = destArr.find((it) => it.id === result[1]);
+    return `${cityA.name} &mdash; ${cityB.name}`;
+  }
+
+  if (result.length === 3) {
+    const cityA = destArr.find((it) => it.id === result[0]);
+    const cityB = destArr.find((it) => it.id === result[1]);
+    const cityC = destArr.find((it) => it.id === result[2]);
+    return `${cityA.name} &mdash; ${cityB.name} &mdash; ${cityC.name}`;
+  }
+
+  if (result.length > 3) {
+    const cityA = destArr.find((it) => it.id === result[0]);
+    const cityZ = destArr.find((it) => it.id === result[result.length - 1]);
+    return `${cityA.name} &mdash; ... &mdash; ${cityZ.name}`;
+  }
+};
+
+const getTotalPrice = (pointsArr, offersArr) => {
+  const baseTotalPrice = pointsArr.reduce((prev, cur) => prev + cur.basePrice, 0);
+  const offersTotalPrice = offersArr.reduce((prev, cur) => prev + cur.price, 0);
+  return baseTotalPrice + offersTotalPrice;
+};
+
+export { getRandomInteger, humanizeDate, humanizeTime, getTimeDiff, ucFirst, humanizeDateAndTime, getDates, getCityNames, getTotalPrice };
