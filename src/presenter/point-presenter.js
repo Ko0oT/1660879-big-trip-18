@@ -1,6 +1,6 @@
 import PointView from '../view/point-view';
 import EditPointView from '../view/edit-point-view';
-import { render, replace } from '../framework/render';
+import { render, replace, remove } from '../framework/render';
 
 export default class PointPresenter {
   #point;
@@ -9,9 +9,9 @@ export default class PointPresenter {
   #destinations;
   #avaliableOffers;
 
-  #boardComponent;
-  #pointComponent;
-  #editPointComponent;
+  #boardComponent = null;
+  #pointComponent = null;
+  #editPointComponent = null;
 
   constructor(boardComponent) {
     this.#boardComponent = boardComponent;
@@ -23,6 +23,9 @@ export default class PointPresenter {
     this.#chosenOffers = chosenOffers;
     this.#destinations = destinations;
     this.#avaliableOffers = avaliableOffers;
+
+    const prevPointComponent = this.#pointComponent;
+    const prevEditPointComponent = this.#editPointComponent;
 
     this.#pointComponent = new PointView(this.#point, this.#destination, this.#chosenOffers);
     this.#editPointComponent = new EditPointView(this.#destination, this.#destinations, this.#point, this.#avaliableOffers);
@@ -44,10 +47,28 @@ export default class PointPresenter {
       this.#replaceFormToPoint();
     });
 
+    if (prevPointComponent === null || prevEditPointComponent === null) {
+      render(this.#pointComponent, this.#boardComponent);
+      return;
+    }
 
-    render (this.#pointComponent, this.#boardComponent);
+    if (this.#boardComponent.contains(prevPointComponent.element)) {
+      replace(this.#pointComponent, prevPointComponent);
+    }
+
+    if(this.#boardComponent.contains(prevEditPointComponent.element)) {
+      replace(this.#editPointComponent, prevEditPointComponent);
+    }
+
+    remove(prevPointComponent);
+    remove(prevEditPointComponent);
+
   };
 
+  destroy = () => {
+    remove(this.#pointComponent);
+    remove(this.#editPointComponent);
+  };
 
   #replacePointToForm = () => {
     replace(this.#editPointComponent, this.#pointComponent);
