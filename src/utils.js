@@ -59,9 +59,9 @@ const getCityNames = (pointsArr, destArr) => {
   const result = [];
   let repeat = null;
   pointsArr.forEach((el)=>{
-    if(el.id !== repeat){
-      result.push(el.id);
-      repeat = el.id;
+    if(el.destination !== repeat){
+      result.push(el.destination);
+      repeat = el.destination;
     }
   });
 

@@ -23,6 +23,7 @@ export default class BoardPresenter {
   #avaliableOffers;
   #boardDestination;
   #allChosenOffers = [];
+  #pointPresenter = new Map();
 
   constructor(infoContainer, headerContainer, boardContainer, pointModel) {
     this.#infoContainer = infoContainer;
@@ -46,6 +47,12 @@ export default class BoardPresenter {
   #renderPoint = (point, destination, chosenOffers, destinations, avaliableOffers) => {
     const pointPresenter = new PointPresenter(this.#boardComponent.element);
     pointPresenter.init(point, destination, chosenOffers, destinations, avaliableOffers);
+    this.#pointPresenter.set(point.id, pointPresenter);
+  };
+
+  #clearPoints = () => {
+    this.#pointPresenter.forEach((presenter) => presenter.destroy());
+    this.#pointPresenter.clear();
   };
 
   #renderPoints = () => {
