@@ -27,23 +27,24 @@ export default class PointPresenter {
     this.#pointComponent = new PointView(this.#point);
     this.#editPointComponent = new EditPointView(this.#point, this.#destinations);
 
-    this.#pointComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
 
-    this.#pointComponent.setClickHandler(() => {
+    this.#pointComponent.setFavoriteClickHandler(() => {
+      this.#changeData({...this.#point, isFavorite: !this.#point.isFavorite});
+    });
+
+    this.#pointComponent.setArrowClickHandler(() => {
       this.#replacePointToForm();
-      document.addEventListener('keydown', this.#onEscKeyDown);
     });
 
-
-    this.#editPointComponent.setFormSubmitHandler(() => {
-      this.#replaceFormToPoint();
-      document.removeEventListener('keydown', this.#onEscKeyDown);
-    });
-
-
-    this.#editPointComponent.setFormClickHandler(() => {
+    this.#editPointComponent.setFormSubmitHandler((task) => {
+      this.#changeData(task);
       this.#replaceFormToPoint();
     });
+
+    this.#editPointComponent.setFormArrowClickHandler(() => {
+      this.#replaceFormToPoint();
+    });
+
 
     if (prevPointComponent === null || prevEditPointComponent === null) {
       render(this.#pointComponent, this.#boardComponent);
@@ -58,6 +59,7 @@ export default class PointPresenter {
       replace(this.#editPointComponent, prevEditPointComponent);
     }
 
+
     remove(prevPointComponent);
     remove(prevEditPointComponent);
 
@@ -69,18 +71,15 @@ export default class PointPresenter {
   };
 
 
-  #handleFavoriteClick = () => {
-    this.#changeData({...this.#point, isFavorite: !this.#point.isFavorite});
-  };
-
-
   #replacePointToForm = () => {
     replace(this.#editPointComponent, this.#pointComponent);
+    document.addEventListener('keydown', this.#onEscKeyDown);
   };
 
 
   #replaceFormToPoint = () => {
     replace(this.#pointComponent, this.#editPointComponent);
+    document.removeEventListener('keydown', this.#onEscKeyDown);
   };
 
 
