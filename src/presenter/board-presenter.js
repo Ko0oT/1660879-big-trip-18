@@ -41,6 +41,10 @@ export default class BoardPresenter {
     this.#renderHeader(this.#boardPoints, this.#boardDestinations, this.#boardOffers);
   };
 
+  #handleMockChange = () => {
+    this.#pointPresenter.forEach((presenter) => presenter.resetView());
+  };
+
   #handlePointChange = (updatedPoint) => {
     this.#boardPoints = updateItem(this.#boardPoints, updatedPoint);
     this.#pointPresenter.get(updatedPoint.id).init(updatedPoint, this.#boardDestinations);
@@ -48,7 +52,7 @@ export default class BoardPresenter {
 
   #renderPoint = (point, destinations) => {
 
-    const pointPresenter = new PointPresenter(this.#boardComponent.element, this.#handlePointChange);
+    const pointPresenter = new PointPresenter(this.#boardComponent.element, this.#handlePointChange, this.#handleMockChange);
     pointPresenter.init(point, destinations);
     this.#pointPresenter.set(point.id, pointPresenter);
   };
