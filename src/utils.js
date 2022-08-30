@@ -59,9 +59,9 @@ const getCityNames = (pointsArr, destArr) => {
   const result = [];
   let repeat = null;
   pointsArr.forEach((el)=>{
-    if(el.destination !== repeat){
-      result.push(el.destination);
-      repeat = el.destination;
+    if(el.destination.id !== repeat){
+      result.push(el.destination.id);
+      repeat = el.destination.id;
     }
   });
 
@@ -92,8 +92,11 @@ const getCityNames = (pointsArr, destArr) => {
 
 const getTotalPrice = (pointsArr, offersArr) => {
   const baseTotalPrice = pointsArr.reduce((prev, cur) => prev + cur.basePrice, 0);
-  const offersTotalPrice = offersArr.reduce((prev, cur) => prev + cur.price, 0);
-  return baseTotalPrice + offersTotalPrice;
+  // const offersTotalPrice = offersArr.reduce((prev, cur) => prev + cur.price, 0);
+  // return baseTotalPrice + offersTotalPrice;
+
+  //буду думать как посчитать сумму выбранных офферов исходя из новых условий
+  return baseTotalPrice;
 };
 
 const updateItem = (items, update) => {

@@ -20,10 +20,7 @@ export default class BoardPresenter {
   #boardPoints;
   #boardDestinations;
   #boardOffers;
-  #chosenOffers;
-  #avaliableOffers;
-  #boardDestination;
-  #allChosenOffers = [];
+
   #pointPresenter = new Map();
 
   constructor(infoContainer, headerContainer, boardContainer, pointModel) {
@@ -41,17 +38,18 @@ export default class BoardPresenter {
     this.#boardOffers = [...this.#pointModel.offers];
 
     this.#renderBoard();
-    this.#renderHeader(this.#boardPoints, this.#boardDestinations, this.#allChosenOffers);
+    this.#renderHeader(this.#boardPoints, this.#boardDestinations, this.#boardOffers);
   };
 
   #handlePointChange = (updatedPoint) => {
     this.#boardPoints = updateItem(this.#boardPoints, updatedPoint);
-    this.#pointPresenter.get(updatedPoint.id).init(updatedPoint);
+    this.#pointPresenter.get(updatedPoint.id).init(updatedPoint, this.#boardDestinations);
   };
 
-  #renderPoint = (point, destination, chosenOffers, destinations, avaliableOffers) => {
-    const pointPresenter = new PointPresenter(this.#boardComponent.element);
-    pointPresenter.init(point, destination, chosenOffers, destinations, avaliableOffers);
+  #renderPoint = (point, destinations) => {
+
+    const pointPresenter = new PointPresenter(this.#boardComponent.element, this.#handlePointChange);
+    pointPresenter.init(point, destinations);
     this.#pointPresenter.set(point.id, pointPresenter);
   };
 
@@ -64,13 +62,21 @@ export default class BoardPresenter {
 
     for (let i = 0; i < this.#boardPoints.length; i++) {
 
-      this.#boardDestination = this.#boardDestinations.find((it) => it.id === this.#boardPoints[i].destination);
-      this.#chosenOffers = this.#boardOffers.find((it) => it.type === this.#boardPoints[i].type).offers; //надо доработать, чтобы отрисовывались только выбранные, сделаю позже
-      this.#allChosenOffers = this.#allChosenOffers.concat(this.#chosenOffers); //для подсчёта общей стомости выбранных офферов
+      const destination = this.#boardDestinations.find((it) => it.id === this.#boardPoints[i].destination);
+      const filterOffers = () => {
+        const pointOffers = this.#boardOffers.find((offer) => offer.type === this.#boardPoints[i].type);
+        const offersToAd = pointOffers.offers.filter((offer) => this.#boardPoints[i].offers.includes(offer.id));
+        return {
+          type: pointOffers.type,
+          offers: offersToAd,
+        };
+      };
 
-      this.#avaliableOffers = this.#boardOffers.find((it) => it.type === this.#boardPoints[i].type).offers;
+      this.#boardPoints[i].destination = destination;
+      this.#boardPoints[i].offers = filterOffers();
 
-      this.#renderPoint(this.#boardPoints[i], this.#boardDestination, this.#chosenOffers, this.#boardDestinations, this.#avaliableOffers);
+
+      this.#renderPoint(this.#boardPoints[i], this.#boardDestinations);
 
     }
   };
@@ -88,18 +94,21 @@ export default class BoardPresenter {
     }
   };
 
-  #renderHeader = (points, destinations, allChosenOffers) => {
+
+  #renderHeader = (points, destinations, offers) => {
 
     if (this.#boardPoints.length > 0) {
-      render(new HeaderInfoView(points, destinations, allChosenOffers), this.#infoContainer, RenderPosition.AFTERBEGIN);
+      render(new HeaderInfoView(points, destinations, offers), this.#infoContainer, RenderPosition.AFTERBEGIN);
       render(new FilterView(points), this.#headerContainer);
     }
 
   };
 
+
   #renderNoPoints = () => {
     render(this.#noPointComponent, this.#boardContainer);
   };
+
 
   #renderSort = () => {
     render(this.#sortComponent, this.#boardComponent.element);

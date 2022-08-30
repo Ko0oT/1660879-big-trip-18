@@ -6,16 +6,18 @@ import { createAvaliableOffersTemplate } from './edit-point-avaliable-offers-tem
 import { createPointsMenuTemplate } from './edit-point-points-menu-template.js';
 import { createDatalistOptionTemplate } from './edit-point-datalist-option-template.js';
 
-const BLANK_DESTINATION = {
-  id: '',
-  description: '',
-  name: '',
-  pictures: []
-};
+// const BLANK_DESTINATION = {
+//   id: '',
+//   description: '',
+//   name: '',
+//   pictures: []
+// };
 
-const createEditPointTemplate = (chosenDestination, destinations, point, avaliableOffers) => {
-  const { description, name, pictures } = chosenDestination;
-  const { type, dateFrom, dateTo, basePrice } = point;
+const createEditPointTemplate = (point, destinations) => {
+  const dest = point.destination;
+  const { description, name, pictures } = dest;
+  const { type, dateFrom, dateTo, basePrice, offers } = point;
+  const offersArray = offers.offers;
 
   return (
     `<li class="trip-events__item">
@@ -69,7 +71,7 @@ const createEditPointTemplate = (chosenDestination, destinations, point, avaliab
           </button>
         </header>
         <section class="event__details">
-              ${ avaliableOffers[0] ? createAvaliableOffersTemplate(avaliableOffers) : '' }
+              ${ offersArray[0] ? createAvaliableOffersTemplate(offersArray) : '' }
               ${ description ? createDestinationTemplate(description, pictures) : '' }
         </section>
       </form>
@@ -78,21 +80,19 @@ const createEditPointTemplate = (chosenDestination, destinations, point, avaliab
 };
 
 export default class EditPointView extends AbstractView {
-  #chosenDestination;
-  #destinations;
   #point;
-  #avaliableOffers;
+  #destinations;
 
-  constructor(chosenDestination = BLANK_DESTINATION, destinations, point, avaliableOffers) {
+
+  // constructor(chosenDestination = BLANK_DESTINATION, destinations, point, avaliableOffers) {
+  constructor(point, destinations) {
     super();
-    this.#chosenDestination = chosenDestination;
     this.#destinations = destinations;
     this.#point = point;
-    this.#avaliableOffers = avaliableOffers;
   }
 
   get template() {
-    return createEditPointTemplate(this.#chosenDestination, this.#destinations, this.#point, this.#avaliableOffers);
+    return createEditPointTemplate(this.#point, this.#destinations);
   }
 
   setFormSubmitHandler = (callback) => {

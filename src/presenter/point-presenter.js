@@ -4,32 +4,30 @@ import { render, replace, remove } from '../framework/render';
 
 export default class PointPresenter {
   #point;
-  #destination;
-  #chosenOffers;
   #destinations;
-  #avaliableOffers;
 
   #boardComponent = null;
+  #changeData = null;
+
   #pointComponent = null;
   #editPointComponent = null;
 
-  constructor(boardComponent) {
+  constructor(boardComponent, changeData) {
     this.#boardComponent = boardComponent;
+    this.#changeData = changeData;
   }
 
-  init = (point, destination, chosenOffers, destinations, avaliableOffers) => {
+  init = (point, destinations) => {
     this.#point = point;
-    this.#destination = destination;
-    this.#chosenOffers = chosenOffers;
     this.#destinations = destinations;
-    this.#avaliableOffers = avaliableOffers;
 
     const prevPointComponent = this.#pointComponent;
     const prevEditPointComponent = this.#editPointComponent;
 
-    this.#pointComponent = new PointView(this.#point, this.#destination, this.#chosenOffers);
-    this.#editPointComponent = new EditPointView(this.#destination, this.#destinations, this.#point, this.#avaliableOffers);
+    this.#pointComponent = new PointView(this.#point);
+    this.#editPointComponent = new EditPointView(this.#point, this.#destinations);
 
+    this.#pointComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
 
     this.#pointComponent.setClickHandler(() => {
       this.#replacePointToForm();
@@ -69,6 +67,12 @@ export default class PointPresenter {
     remove(this.#pointComponent);
     remove(this.#editPointComponent);
   };
+
+
+  #handleFavoriteClick = () => {
+    this.#changeData({...this.#point, isFavorite: !this.#point.isFavorite});
+  };
+
 
   #replacePointToForm = () => {
     replace(this.#editPointComponent, this.#pointComponent);
