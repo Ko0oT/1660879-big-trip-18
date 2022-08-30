@@ -5,6 +5,7 @@ import FilterView from '../view/filter-view.js';
 import HeaderInfoView from '../view/header-info-view.js';
 import PointPresenter from './point-presenter.js';
 import { render, RenderPosition } from '../framework/render.js';
+import { updateItem } from '../utils.js';
 
 export default class BoardPresenter {
   #infoContainer;
@@ -43,6 +44,10 @@ export default class BoardPresenter {
     this.#renderHeader(this.#boardPoints, this.#boardDestinations, this.#allChosenOffers);
   };
 
+  #handlePointChange = (updatedPoint) => {
+    this.#boardPoints = updateItem(this.#boardPoints, updatedPoint);
+    this.#pointPresenter.get(updatedPoint.id).init(updatedPoint);
+  };
 
   #renderPoint = (point, destination, chosenOffers, destinations, avaliableOffers) => {
     const pointPresenter = new PointPresenter(this.#boardComponent.element);
