@@ -32,9 +32,9 @@ const createFilterTemplate = (points) => {
 export default class FilterView extends AbstractView {
   #points;
 
-  constructor(points) {
+  constructor(pointModel) {
     super();
-    this.#points = points;
+    this.#points = [...pointModel.points];
   }
 
   get template() {

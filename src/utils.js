@@ -40,5 +40,86 @@ const ucFirst = (str) => {
   return str[0].toUpperCase() + str.slice(1);
 };
 
+const getDates = (pointsArr) => {
+  const dateA = pointsArr[0].dateFrom;
+  const dateB = pointsArr[pointsArr.length - 1].dateTo;
 
-export { getRandomInteger, humanizeDate, humanizeTime, getTimeDiff, ucFirst, humanizeDateAndTime };
+  if (dayjs(dateA).isSame(dayjs(dateB), 'day')) {
+    return `${dayjs(dateA).format('MMM D')}`;
+  }
+
+  if (dayjs(dateA).isSame(dayjs(dateB), 'month')) {
+    return `${dayjs(dateA).format('MMM D')} &mdash; ${dayjs(dateB).format('D')}`;
+  }
+
+  return `${dayjs(dateA).format('MMM D')} &mdash; ${dayjs(dateB).format('MMM D')}`;
+};
+
+const getCityNames = (pointsArr, destArr) => {
+  const result = [];
+  let repeat = null;
+  pointsArr.forEach((el)=>{
+    if(el.destination !== repeat){
+      result.push(el.destination);
+      repeat = el.destination;
+    }
+  });
+
+  if (result.length === 1) {
+    const cityA = destArr.find((it) => it.id === result[0]);
+    return cityA.name;
+  }
+
+  if (result.length === 2) {
+    const cityA = destArr.find((it) => it.id === result[0]);
+    const cityB = destArr.find((it) => it.id === result[1]);
+    return `${cityA.name} &mdash; ${cityB.name}`;
+  }
+
+  if (result.length === 3) {
+    const cityA = destArr.find((it) => it.id === result[0]);
+    const cityB = destArr.find((it) => it.id === result[1]);
+    const cityC = destArr.find((it) => it.id === result[2]);
+    return `${cityA.name} &mdash; ${cityB.name} &mdash; ${cityC.name}`;
+  }
+
+  if (result.length > 3) {
+    const cityA = destArr.find((it) => it.id === result[0]);
+    const cityZ = destArr.find((it) => it.id === result[result.length - 1]);
+    return `${cityA.name} &mdash; ... &mdash; ${cityZ.name}`;
+  }
+};
+
+const getTotalPrice = (pointsArr, offersArr) => {
+  const baseTotalPrice = pointsArr.reduce((prev, cur) => prev + cur.basePrice, 0);
+  const offersTotalPrice = offersArr.reduce((prev, cur) => prev + cur.price, 0);
+  return baseTotalPrice + offersTotalPrice;
+};
+
+const updateItem = (items, update) => {
+  const index = items.findIndex((item) => item.id === update.id);
+
+  if (index === -1) {
+    return items;
+  }
+
+  return [
+    ...items.slice(0, index),
+    update,
+    ...items.slice(index + 1),
+  ];
+};
+
+
+const sortPointsByDay = (pointA, pointB) => dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
+
+const sortPointsByPrice = (pointA, pointB) => pointB.basePrice - pointA.basePrice;
+
+const sortPointsByTime = (pointA, pointB) => {
+  const timeA = dayjs(pointA.dateFrom).diff(dayjs(pointA.dateTo));
+  const timeB = dayjs(pointB.dateFrom).diff(dayjs(pointB.dateTo));
+  return timeA - timeB;
+};
+
+
+export { getRandomInteger, humanizeDate, humanizeTime, getTimeDiff, ucFirst, humanizeDateAndTime, getDates, getCityNames, getTotalPrice, updateItem, sortPointsByDay, sortPointsByPrice, sortPointsByTime };

@@ -6,16 +6,20 @@ import { createAvaliableOffersTemplate } from './edit-point-avaliable-offers-tem
 import { createPointsMenuTemplate } from './edit-point-points-menu-template.js';
 import { createDatalistOptionTemplate } from './edit-point-datalist-option-template.js';
 
-const BLANK_DESTINATION = {
-  id: '',
-  description: '',
-  name: '',
-  pictures: []
-};
+// const BLANK_DESTINATION = {
+//   id: '',
+//   description: '',
+//   name: '',
+//   pictures: []
+// };
 
-const createEditPointTemplate = (chosenDestination, destinations, point, avaliableOffers) => {
-  const { description, name, pictures } = chosenDestination;
+const createEditPointTemplate = (pointModel, point) => {
+  const destination = pointModel.getDestinationById(point);
+  const offersArray = pointModel.getOffersById(point);
+  const { description, name, pictures } = destination;
   const { type, dateFrom, dateTo, basePrice } = point;
+  const destinations = [...pointModel.destinations];
+
 
   return (
     `<li class="trip-events__item">
@@ -69,7 +73,7 @@ const createEditPointTemplate = (chosenDestination, destinations, point, avaliab
           </button>
         </header>
         <section class="event__details">
-              ${ avaliableOffers[0] ? createAvaliableOffersTemplate(avaliableOffers) : '' }
+              ${ offersArray[0] ? createAvaliableOffersTemplate(offersArray) : '' }
               ${ description ? createDestinationTemplate(description, pictures) : '' }
         </section>
       </form>
@@ -78,21 +82,18 @@ const createEditPointTemplate = (chosenDestination, destinations, point, avaliab
 };
 
 export default class EditPointView extends AbstractView {
-  #chosenDestination;
-  #destinations;
+  #pointModel;
   #point;
-  #avaliableOffers;
 
-  constructor(chosenDestination = BLANK_DESTINATION, destinations, point, avaliableOffers) {
+  // constructor(chosenDestination = BLANK_DESTINATION, destinations, point, avaliableOffers) {
+  constructor(pointModel, point) {
     super();
-    this.#chosenDestination = chosenDestination;
-    this.#destinations = destinations;
+    this.#pointModel = pointModel;
     this.#point = point;
-    this.#avaliableOffers = avaliableOffers;
   }
 
   get template() {
-    return createEditPointTemplate(this.#chosenDestination, this.#destinations, this.#point, this.#avaliableOffers);
+    return createEditPointTemplate(this.#pointModel, this.#point);
   }
 
   setFormSubmitHandler = (callback) => {
@@ -102,15 +103,15 @@ export default class EditPointView extends AbstractView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this._callback.formSubmit();
+    this._callback.formSubmit(this.#point);
   };
 
-  setFormClickHandler = (callback) => {
+  setFormArrowClickHandler = (callback) => {
     this._callback.formClick = callback;
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formClickHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formArrowClickHandler);
   };
 
-  #formClickHandler = (evt) => {
+  #formArrowClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.formClick();
   };
