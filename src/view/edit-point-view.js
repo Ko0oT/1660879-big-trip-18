@@ -13,11 +13,13 @@ import { createDatalistOptionTemplate } from './edit-point-datalist-option-templ
 //   pictures: []
 // };
 
-const createEditPointTemplate = (point, destinations) => {
-  const dest = point.destination;
-  const { description, name, pictures } = dest;
-  const { type, dateFrom, dateTo, basePrice, offers } = point;
-  const offersArray = offers.offers;
+const createEditPointTemplate = (pointModel, point) => {
+  const destination = pointModel.getDestinationById(point);
+  const offersArray = pointModel.getOffersById(point);
+  const { description, name, pictures } = destination;
+  const { type, dateFrom, dateTo, basePrice } = point;
+  const destinations = [...pointModel.destinations];
+
 
   return (
     `<li class="trip-events__item">
@@ -80,19 +82,18 @@ const createEditPointTemplate = (point, destinations) => {
 };
 
 export default class EditPointView extends AbstractView {
+  #pointModel;
   #point;
-  #destinations;
-
 
   // constructor(chosenDestination = BLANK_DESTINATION, destinations, point, avaliableOffers) {
-  constructor(point, destinations) {
+  constructor(pointModel, point) {
     super();
-    this.#destinations = destinations;
+    this.#pointModel = pointModel;
     this.#point = point;
   }
 
   get template() {
-    return createEditPointTemplate(this.#point, this.#destinations);
+    return createEditPointTemplate(this.#pointModel, this.#point);
   }
 
   setFormSubmitHandler = (callback) => {

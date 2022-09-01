@@ -3,9 +3,10 @@ import { humanizeDate, humanizeTime, getTimeDiff, ucFirst } from '../utils.js';
 import { createChosenOffersTemplate } from './point-chosen-offers-template.js';
 
 
-const createPointTemplate = (point) => {
-  const { basePrice, dateFrom, dateTo, isFavorite, type, destination, offers } = point;
-  const offersArray = offers.offers;
+const createPointTemplate = (pointModel, point) => {
+  const destination = pointModel.getDestinationById(point);
+  const offersArray = pointModel.getOffersById(point);
+  const { basePrice, dateFrom, dateTo, isFavorite, type } = point;
 
   const setFavorite = isFavorite
     ? 'event__favorite-btn--active'
@@ -47,15 +48,17 @@ const createPointTemplate = (point) => {
 
 
 export default class PointView extends AbstractView {
+  #pointModel;
   #point;
 
-  constructor(point) {
+  constructor(pointModel, point) {
     super();
+    this.#pointModel = pointModel;
     this.#point = point;
   }
 
   get template() {
-    return createPointTemplate(this.#point);
+    return createPointTemplate(this.#pointModel, this.#point);
   }
 
   setArrowClickHandler = (callback) => {

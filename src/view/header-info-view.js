@@ -20,14 +20,12 @@ export default class HeaderInfoView extends AbstractView {
   #points;
   #destinations;
   #offers;
-  // #allChosenOffers;
 
-  constructor(points, destinations, offers) {
+  constructor(points, pointModel) {
     super();
     this.#points = points;
-    this.#destinations = destinations;
-    // this.#allChosenOffers = allChosenOffers;
-    this.#offers = offers;
+    this.#destinations = [...pointModel.destinations];
+    this.#offers = pointModel.getAllOffersByPoints(this.#points);
   }
 
   get template() {

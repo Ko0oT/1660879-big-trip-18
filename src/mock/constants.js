@@ -60,4 +60,11 @@ const MAX_PICS_COUNT = 5;
 const MIN_PRICE = 20;
 const MAX_PRICE = 4999;
 
-export { descriptions, cities, pics, MIN_PICS_COUNT, MAX_PICS_COUNT, types, MIN_PRICE, MAX_PRICE };
+// Типы сортировок
+const SortType = {
+  DEFAULT: 'default',
+  TIME: 'time',
+  PRICE: 'price',
+};
+
+export { descriptions, cities, pics, MIN_PICS_COUNT, MAX_PICS_COUNT, types, MIN_PRICE, MAX_PRICE, SortType };

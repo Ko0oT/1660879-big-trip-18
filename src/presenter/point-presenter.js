@@ -9,8 +9,8 @@ const Mode = {
 
 export default class PointPresenter {
   #point;
-  #destinations;
 
+  #pointModel;
   #boardComponent = null;
   #changeData = null;
   #changeMode = null;
@@ -20,21 +20,21 @@ export default class PointPresenter {
 
   #mode = Mode.DEFAULT;
 
-  constructor(boardComponent, changeData, changeMode) {
+  constructor(pointModel, boardComponent, changeData, changeMode) {
+    this.#pointModel = pointModel;
     this.#boardComponent = boardComponent;
     this.#changeData = changeData;
     this.#changeMode = changeMode;
   }
 
-  init = (point, destinations) => {
+  init = (point) => {
     this.#point = point;
-    this.#destinations = destinations;
 
     const prevPointComponent = this.#pointComponent;
     const prevEditPointComponent = this.#editPointComponent;
 
-    this.#pointComponent = new PointView(this.#point);
-    this.#editPointComponent = new EditPointView(this.#point, this.#destinations);
+    this.#pointComponent = new PointView(this.#pointModel, this.#point);
+    this.#editPointComponent = new EditPointView(this.#pointModel, this.#point);
 
 
     this.#pointComponent.setFavoriteClickHandler(() => {

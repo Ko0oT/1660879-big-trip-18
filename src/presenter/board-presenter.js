@@ -1,11 +1,11 @@
 import BoardView from '../view/board-view.js';
 import NoPointsView from '../view/no-points-view.js';
 import SortView from '../view/sort-view.js';
-import FilterView from '../view/filter-view.js';
-import HeaderInfoView from '../view/header-info-view.js';
 import PointPresenter from './point-presenter.js';
-import { render, RenderPosition } from '../framework/render.js';
-import { updateItem } from '../utils.js';
+import HeaderPresenter from './header-presenter.js';
+import { render } from '../framework/render.js';
+import { updateItem, sortPointsByDay, sortPointsByPrice, sortPointsByTime } from '../utils.js';
+import { SortType } from '../mock/constants.js';
 
 export default class BoardPresenter {
   #infoContainer;
@@ -22,6 +22,8 @@ export default class BoardPresenter {
   #boardOffers;
 
   #pointPresenter = new Map();
+  #currentSortType = SortType.DEFAULT;
+  #sourcedBoardPoints = [];
 
   constructor(infoContainer, headerContainer, boardContainer, pointModel) {
     this.#infoContainer = infoContainer;
@@ -33,12 +35,13 @@ export default class BoardPresenter {
 
   init = () => {
 
-    this.#boardPoints = [...this.#pointModel.points];
+    this.#boardPoints = [...this.#pointModel.points].sort(sortPointsByDay);
+    this.#sourcedBoardPoints = [...this.#pointModel.points].sort(sortPointsByDay);
     this.#boardDestinations = [...this.#pointModel.destinations];
     this.#boardOffers = [...this.#pointModel.offers];
 
     this.#renderBoard();
-    this.#renderHeader(this.#boardPoints, this.#boardDestinations, this.#boardOffers);
+    this.#renderHeader();
   };
 
   #handleMockChange = () => {
@@ -47,13 +50,29 @@ export default class BoardPresenter {
 
   #handlePointChange = (updatedPoint) => {
     this.#boardPoints = updateItem(this.#boardPoints, updatedPoint);
-    this.#pointPresenter.get(updatedPoint.id).init(updatedPoint, this.#boardDestinations);
+    this.#sourcedBoardPoints = updateItem(this.#sourcedBoardPoints, updatedPoint);
+    this.#pointPresenter.get(updatedPoint.id).init(updatedPoint);
   };
 
-  #renderPoint = (point, destinations) => {
+  #sortPoints = (sortType) => {
+    switch (sortType) {
+      case SortType.PRICE:
+        this.#boardPoints.sort(sortPointsByPrice);
+        break;
+      case SortType.TIME:
+        this.#boardPoints.sort(sortPointsByTime);
+        break;
+      default:
+        this.#boardPoints = [...this.#sourcedBoardPoints];
+    }
+    this.#currentSortType = sortType;
+  };
 
-    const pointPresenter = new PointPresenter(this.#boardComponent.element, this.#handlePointChange, this.#handleMockChange);
-    pointPresenter.init(point, destinations);
+
+  #renderPoint = (point) => {
+
+    const pointPresenter = new PointPresenter(this.#pointModel, this.#boardComponent.element, this.#handlePointChange, this.#handleMockChange);
+    pointPresenter.init(point);
     this.#pointPresenter.set(point.id, pointPresenter);
   };
 
@@ -64,25 +83,8 @@ export default class BoardPresenter {
 
   #renderPoints = () => {
 
-    for (let i = 0; i < this.#boardPoints.length; i++) {
+    this.#boardPoints.forEach((it) => this.#renderPoint(it));
 
-      const destination = this.#boardDestinations.find((it) => it.id === this.#boardPoints[i].destination);
-      const filterOffers = () => {
-        const pointOffers = this.#boardOffers.find((offer) => offer.type === this.#boardPoints[i].type);
-        const offersToAd = pointOffers.offers.filter((offer) => this.#boardPoints[i].offers.includes(offer.id));
-        return {
-          type: pointOffers.type,
-          offers: offersToAd,
-        };
-      };
-
-      this.#boardPoints[i].destination = destination;
-      this.#boardPoints[i].offers = filterOffers();
-
-
-      this.#renderPoint(this.#boardPoints[i], this.#boardDestinations);
-
-    }
   };
 
   #renderBoard = () => {
@@ -99,13 +101,12 @@ export default class BoardPresenter {
   };
 
 
-  #renderHeader = (points, destinations, offers) => {
+  #renderHeader = () => {
 
     if (this.#boardPoints.length > 0) {
-      render(new HeaderInfoView(points, destinations, offers), this.#infoContainer, RenderPosition.AFTERBEGIN);
-      render(new FilterView(points), this.#headerContainer);
+      const headerPresenter = new HeaderPresenter(this.#boardPoints, this.#pointModel, this.#infoContainer, this.#headerContainer);
+      headerPresenter.init();
     }
-
   };
 
 
@@ -114,7 +115,19 @@ export default class BoardPresenter {
   };
 
 
+  #handleSortTypeChange = (sortType) => {
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+
+    this.#sortPoints(sortType);
+    this.#clearPoints();
+    this.#renderPoints();
+  };
+
+
   #renderSort = () => {
     render(this.#sortComponent, this.#boardComponent.element);
+    this.#sortComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
   };
 }

@@ -59,9 +59,9 @@ const getCityNames = (pointsArr, destArr) => {
   const result = [];
   let repeat = null;
   pointsArr.forEach((el)=>{
-    if(el.destination.id !== repeat){
-      result.push(el.destination.id);
-      repeat = el.destination.id;
+    if(el.destination !== repeat){
+      result.push(el.destination);
+      repeat = el.destination;
     }
   });
 
@@ -92,11 +92,8 @@ const getCityNames = (pointsArr, destArr) => {
 
 const getTotalPrice = (pointsArr, offersArr) => {
   const baseTotalPrice = pointsArr.reduce((prev, cur) => prev + cur.basePrice, 0);
-  // const offersTotalPrice = offersArr.reduce((prev, cur) => prev + cur.price, 0);
-  // return baseTotalPrice + offersTotalPrice;
-
-  //буду думать как посчитать сумму выбранных офферов исходя из новых условий
-  return baseTotalPrice;
+  const offersTotalPrice = offersArr.reduce((prev, cur) => prev + cur.price, 0);
+  return baseTotalPrice + offersTotalPrice;
 };
 
 const updateItem = (items, update) => {
@@ -113,4 +110,16 @@ const updateItem = (items, update) => {
   ];
 };
 
-export { getRandomInteger, humanizeDate, humanizeTime, getTimeDiff, ucFirst, humanizeDateAndTime, getDates, getCityNames, getTotalPrice, updateItem };
+
+const sortPointsByDay = (pointA, pointB) => dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
+
+const sortPointsByPrice = (pointA, pointB) => pointB.basePrice - pointA.basePrice;
+
+const sortPointsByTime = (pointA, pointB) => {
+  const timeA = dayjs(pointA.dateFrom).diff(dayjs(pointA.dateTo));
+  const timeB = dayjs(pointB.dateFrom).diff(dayjs(pointB.dateTo));
+  return timeA - timeB;
+};
+
+
+export { getRandomInteger, humanizeDate, humanizeTime, getTimeDiff, ucFirst, humanizeDateAndTime, getDates, getCityNames, getTotalPrice, updateItem, sortPointsByDay, sortPointsByPrice, sortPointsByTime };
