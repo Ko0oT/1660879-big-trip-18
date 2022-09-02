@@ -6,15 +6,9 @@ import { createAvaliableOffersTemplate } from './edit-point-avaliable-offers-tem
 import { createPointsMenuTemplate } from './edit-point-points-menu-template.js';
 import { createDatalistOptionTemplate } from './edit-point-datalist-option-template.js';
 
-// const BLANK_DESTINATION = {
-//   id: '',
-//   description: '',
-//   name: '',
-//   pictures: []
-// };
 
 const createEditPointTemplate = (pointModel, point) => {
-  const destination = pointModel.getDestinationById(point);
+  const destination = pointModel.getDestinationById(point.destination);
   const offersArray = pointModel.getOffersById(point);
   const { description, name, pictures } = destination;
   const { type, dateFrom, dateTo, basePrice } = point;
@@ -85,7 +79,6 @@ export default class EditPointView extends AbstractView {
   #pointModel;
   #point;
 
-  // constructor(chosenDestination = BLANK_DESTINATION, destinations, point, avaliableOffers) {
   constructor(pointModel, point) {
     super();
     this.#pointModel = pointModel;

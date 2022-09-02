@@ -55,6 +55,41 @@ const getDates = (pointsArr) => {
   return `${dayjs(dateA).format('MMM D')} &mdash; ${dayjs(dateB).format('MMM D')}`;
 };
 
+// const getCityNames = (pointsArr, destArr) => {
+//   const result = [];
+//   let repeat = null;
+//   pointsArr.forEach((el)=>{
+//     if(el.destination !== repeat){
+//       result.push(el.destination);
+//       repeat = el.destination;
+//     }
+//   });
+
+//   if (result.length === 1) {
+//     const cityA = destArr.find((it) => it.id === result[0]);
+//     return cityA.name;
+//   }
+
+//   if (result.length === 2) {
+//     const cityA = destArr.find((it) => it.id === result[0]);
+//     const cityB = destArr.find((it) => it.id === result[1]);
+//     return `${cityA.name} &mdash; ${cityB.name}`;
+//   }
+
+//   if (result.length === 3) {
+//     const cityA = destArr.find((it) => it.id === result[0]);
+//     const cityB = destArr.find((it) => it.id === result[1]);
+//     const cityC = destArr.find((it) => it.id === result[2]);
+//     return `${cityA.name} &mdash; ${cityB.name} &mdash; ${cityC.name}`;
+//   }
+
+//   if (result.length > 3) {
+//     const cityA = destArr.find((it) => it.id === result[0]);
+//     const cityZ = destArr.find((it) => it.id === result[result.length - 1]);
+//     return `${cityA.name} &mdash; ... &mdash; ${cityZ.name}`;
+//   }
+// };
+
 const getCityNames = (pointsArr, destArr) => {
   const result = [];
   let repeat = null;
@@ -65,25 +100,11 @@ const getCityNames = (pointsArr, destArr) => {
     }
   });
 
-  if (result.length === 1) {
-    const cityA = destArr.find((it) => it.id === result[0]);
-    return cityA.name;
-  }
-
-  if (result.length === 2) {
-    const cityA = destArr.find((it) => it.id === result[0]);
-    const cityB = destArr.find((it) => it.id === result[1]);
-    return `${cityA.name} &mdash; ${cityB.name}`;
-  }
-
-  if (result.length === 3) {
-    const cityA = destArr.find((it) => it.id === result[0]);
-    const cityB = destArr.find((it) => it.id === result[1]);
-    const cityC = destArr.find((it) => it.id === result[2]);
-    return `${cityA.name} &mdash; ${cityB.name} &mdash; ${cityC.name}`;
-  }
-
-  if (result.length > 3) {
+  if (result.length <= 3) {
+    const [first, second, third] = result;
+    const cities = destArr.filter((it) => it.id === first || it.id === second || it.id === third);
+    return cities.reduce((prev, cur) => prev.concat(`${cur.name} &mdash; `), '').slice(0, -9);
+  } else {
     const cityA = destArr.find((it) => it.id === result[0]);
     const cityZ = destArr.find((it) => it.id === result[result.length - 1]);
     return `${cityA.name} &mdash; ... &mdash; ${cityZ.name}`;
