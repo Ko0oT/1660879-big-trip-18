@@ -64,8 +64,8 @@ export default class PointModel {
     return this.#destinations;
   }
 
-  getDestinationById(point) {
-    const destination = this.#destinations.find((it) => it.id === point.destination);
+  getDestinationById(pointDestination) {
+    const destination = this.#destinations.find((it) => it.id === pointDestination);
     return destination;
   }
 

@@ -4,7 +4,7 @@ import { createChosenOffersTemplate } from './point-chosen-offers-template.js';
 
 
 const createPointTemplate = (pointModel, point) => {
-  const destination = pointModel.getDestinationById(point);
+  const destination = pointModel.getDestinationById(point.destination);
   const offersArray = pointModel.getOffersById(point);
   const { basePrice, dateFrom, dateTo, isFavorite, type } = point;
 
