@@ -64,7 +64,7 @@ const pics = [
   'https://placekitten.com/g/100/100',
   'https://placekitten.com/g/200/200',
   'https://placekitten.com/g/300/300',
-]
+];
 
 const MIN_PICS_COUNT = 2;
 const MAX_PICS_COUNT = 5;
