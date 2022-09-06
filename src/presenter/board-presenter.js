@@ -12,6 +12,7 @@ export default class BoardPresenter {
   #headerContainer;
   #boardContainer;
   #pointModel;
+  #headerPresenter;
 
   #boardComponent = new BoardView();
   #noPointComponent = new NoPointsView();
@@ -52,6 +53,7 @@ export default class BoardPresenter {
     this.#boardPoints = updateItem(this.#boardPoints, updatedPoint);
     this.#sourcedBoardPoints = updateItem(this.#sourcedBoardPoints, updatedPoint);
     this.#pointPresenter.get(updatedPoint.id).init(updatedPoint);
+    this.#headerPresenter.init(this.#boardPoints);
   };
 
   #sortPoints = (sortType) => {
@@ -104,8 +106,8 @@ export default class BoardPresenter {
   #renderHeader = () => {
 
     if (this.#boardPoints.length > 0) {
-      const headerPresenter = new HeaderPresenter(this.#boardPoints, this.#pointModel, this.#infoContainer, this.#headerContainer);
-      headerPresenter.init();
+      this.#headerPresenter = new HeaderPresenter(this.#pointModel, this.#infoContainer, this.#headerContainer);
+      this.#headerPresenter.init(this.#boardPoints);
     }
   };
 

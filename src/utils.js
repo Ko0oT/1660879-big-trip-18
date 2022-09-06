@@ -17,6 +17,9 @@ const humanizeDateAndTime = (date) => dayjs(date).format('DD/MM/YY HH:mm');
 
 const getTimeDiff = (dateFrom, dateTo) => {
   const diff = dayjs(dateTo).diff(dateFrom, 'minute');
+  if (diff < 0) {
+    return false;
+  }
   if (diff < 60) {
     const minutes = diff ? diff : '00';
     return `${minutes}M`;

@@ -1,6 +1,6 @@
 import FilterView from '../view/filter-view.js';
 import HeaderInfoView from '../view/header-info-view.js';
-import { render, RenderPosition } from '../framework/render';
+import { render, remove, RenderPosition } from '../framework/render';
 
 export default class HeaderPresenter {
   #boardPoints;
@@ -8,24 +8,35 @@ export default class HeaderPresenter {
   #infoContainer;
   #headerContainer;
 
-  #headerInfoComponent;
-  #filterComponent;
+  #headerInfoComponent = null;
+  #filterComponent = null;
 
-  constructor(boardPoints, pointModel, infoContainer, headerContainer) {
-    this.#boardPoints = boardPoints;
+  constructor(pointModel, infoContainer, headerContainer) {
     this.#pointModel = pointModel;
     this.#infoContainer = infoContainer;
     this.#headerContainer = headerContainer;
   }
 
-  init = () => {
+  init = (boardPoints) => {
 
-    this.#headerInfoComponent = new HeaderInfoView(this.#boardPoints, this.#pointModel);
-    this.#filterComponent = new FilterView(this.#pointModel);
+    this.#boardPoints = boardPoints;
 
-    render(this.#headerInfoComponent, this.#infoContainer, RenderPosition.AFTERBEGIN);
-    render(this.#filterComponent, this.#headerContainer);
+    if(this.#headerInfoComponent === null) {
+      this.#headerInfoComponent = new HeaderInfoView(this.#boardPoints, this.#pointModel);
+      this.#filterComponent = new FilterView(this.#boardPoints);
 
+      render(this.#headerInfoComponent, this.#infoContainer, RenderPosition.AFTERBEGIN);
+      render(this.#filterComponent, this.#headerContainer);
+    } else {
+
+      remove(this.#headerInfoComponent);
+      remove(this.#filterComponent);
+      this.#headerInfoComponent = new HeaderInfoView(this.#boardPoints, this.#pointModel);
+      this.#filterComponent = new FilterView(this.#boardPoints);
+      render(this.#headerInfoComponent, this.#infoContainer, RenderPosition.AFTERBEGIN);
+      render(this.#filterComponent, this.#headerContainer);
+
+    }
   };
 
 }

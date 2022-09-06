@@ -42,18 +42,29 @@ const cities = [
 const types = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
 
-//Изображения
-const pics = [
-  'http://picsum.photos/248/152?r=1',
-  'http://picsum.photos/248/152?r=2',
-  'http://picsum.photos/248/152?r=3',
-  'http://picsum.photos/248/152?r=4',
-  'http://picsum.photos/248/152?r=5',
-  'http://picsum.photos/248/152?r=6',
-  'http://picsum.photos/248/152?r=7',
-  'http://picsum.photos/248/152?r=8',
-];
+//Изображения (пришлось поменять сорсы, т.к меня блокнули)
+// const pics = [
+//   'http://picsum.photos/248/152?r=1',
+//   'http://picsum.photos/248/152?r=2',
+//   'http://picsum.photos/248/152?r=3',
+//   'http://picsum.photos/248/152?r=4',
+//   'http://picsum.photos/248/152?r=5',
+//   'http://picsum.photos/248/152?r=6',
+//   'http://picsum.photos/248/152?r=7',
+//   'http://picsum.photos/248/152?r=8',
+// ];
 
+const pics = [
+  'https://placekitten.com/g/100/200',
+  'https://placekitten.com/g/200/200',
+  'https://placekitten.com/g/300/200',
+  'https://placekitten.com/g/200/100',
+  'https://placekitten.com/g/200/200',
+  'https://placekitten.com/g/200/300',
+  'https://placekitten.com/g/100/100',
+  'https://placekitten.com/g/200/200',
+  'https://placekitten.com/g/300/300',
+]
 
 const MIN_PICS_COUNT = 2;
 const MAX_PICS_COUNT = 5;
