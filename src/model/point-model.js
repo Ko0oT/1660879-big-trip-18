@@ -80,4 +80,9 @@ export default class PointModel {
     pointsArr.forEach((it) => result.push(...(this.getOffersById(it))));
     return result;
   }
+
+  getIdByDestination(destinationName) {
+    const id = this.#destinations.find((it) => it.name === destinationName).id;
+    return id;
+  }
 }
