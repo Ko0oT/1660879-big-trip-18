@@ -42,18 +42,7 @@ const cities = [
 const types = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
 
-//Изображения (пришлось поменять сорсы, т.к меня блокнули)
-// const pics = [
-//   'http://picsum.photos/248/152?r=1',
-//   'http://picsum.photos/248/152?r=2',
-//   'http://picsum.photos/248/152?r=3',
-//   'http://picsum.photos/248/152?r=4',
-//   'http://picsum.photos/248/152?r=5',
-//   'http://picsum.photos/248/152?r=6',
-//   'http://picsum.photos/248/152?r=7',
-//   'http://picsum.photos/248/152?r=8',
-// ];
-
+//Изображения
 const pics = [
   'https://placekitten.com/g/100/200',
   'https://placekitten.com/g/200/200',
