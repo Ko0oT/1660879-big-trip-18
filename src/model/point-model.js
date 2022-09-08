@@ -82,7 +82,7 @@ export default class PointModel {
   }
 
   getIdByDestination(destinationName) {
-    const id = this.#destinations.find((it) => it.name === destinationName).id;
+    const {id} = this.#destinations.find((it) => it.name === destinationName);
     return id;
   }
 }
