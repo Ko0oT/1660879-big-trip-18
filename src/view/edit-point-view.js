@@ -115,12 +115,18 @@ export default class EditPointView extends AbstractStatefulView {
     this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
   };
 
+  setFormDeleteClickHandler = (callback) => {
+    this._callback.formDeleteClick = callback;
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formDeleteClickHandler);
+  };
+
   _restoreHandlers = () => {
     this.#setInnerHandlers();
     this.#setStartDatepicker();
     this.#setEndDatepicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
-    this.setFormArrowClickHandler(this._callback.formClick);
+    this.setFormArrowClickHandler(this._callback.formArrowClick);
+    this.setFormDeleteClickHandler(this._callback.formDeleteClick);
   };
 
   #formSubmitHandler = (evt) => {
@@ -129,13 +135,18 @@ export default class EditPointView extends AbstractStatefulView {
   };
 
   setFormArrowClickHandler = (callback) => {
-    this._callback.formClick = callback;
+    this._callback.formArrowClick = callback;
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formArrowClickHandler);
   };
 
   #formArrowClickHandler = (evt) => {
     evt.preventDefault();
-    this._callback.formClick();
+    this._callback.formArrowClick();
+  };
+
+  #formDeleteClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.formDeleteClick(EditPointView.parseStateToPoint(this._state));
   };
 
   #changePointTypeHandler = (evt) => {

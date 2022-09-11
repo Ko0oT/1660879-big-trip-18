@@ -62,7 +62,7 @@ const getCityNames = (pointsArr, destArr) => {
   const result = [];
   let repeat = null;
   pointsArr.forEach((el)=>{
-    if(el.destination !== repeat){
+    if (el.destination !== repeat) {
       result.push(el.destination);
       repeat = el.destination;
     }
@@ -85,21 +85,6 @@ const getTotalPrice = (pointsArr, offersArr) => {
   return baseTotalPrice + offersTotalPrice;
 };
 
-const updateItem = (items, update) => {
-  const index = items.findIndex((item) => item.id === update.id);
-
-  if (index === -1) {
-    return items;
-  }
-
-  return [
-    ...items.slice(0, index),
-    update,
-    ...items.slice(index + 1),
-  ];
-};
-
-
 const sortPointsByDay = (pointA, pointB) => dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
 
 const sortPointsByPrice = (pointA, pointB) => pointB.basePrice - pointA.basePrice;
@@ -111,4 +96,4 @@ const sortPointsByTime = (pointA, pointB) => {
 };
 
 
-export { getRandomInteger, humanizeDate, humanizeTime, getTimeDiff, ucFirst, humanizeDateAndTime, getDates, getCityNames, getTotalPrice, updateItem, sortPointsByDay, sortPointsByPrice, sortPointsByTime };
+export { getRandomInteger, humanizeDate, humanizeTime, getTimeDiff, ucFirst, humanizeDateAndTime, getDates, getCityNames, getTotalPrice, sortPointsByDay, sortPointsByPrice, sortPointsByTime };

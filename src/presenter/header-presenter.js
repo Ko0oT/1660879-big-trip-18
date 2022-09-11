@@ -1,6 +1,7 @@
 import FilterView from '../view/filter-view.js';
 import HeaderInfoView from '../view/header-info-view.js';
 import { render, remove, RenderPosition } from '../framework/render';
+import { sortPointsByDay } from '../utils.js';
 
 export default class HeaderPresenter {
   #boardPoints;
@@ -19,7 +20,7 @@ export default class HeaderPresenter {
 
   init = (boardPoints) => {
 
-    this.#boardPoints = boardPoints;
+    this.#boardPoints = boardPoints.sort(sortPointsByDay);
 
     if(this.#headerInfoComponent === null) {
       this.#headerInfoComponent = new HeaderInfoView(this.#boardPoints, this.#pointModel);
@@ -31,10 +32,15 @@ export default class HeaderPresenter {
 
       remove(this.#headerInfoComponent);
       remove(this.#filterComponent);
-      this.#headerInfoComponent = new HeaderInfoView(this.#boardPoints, this.#pointModel);
+
       this.#filterComponent = new FilterView(this.#boardPoints);
-      render(this.#headerInfoComponent, this.#infoContainer, RenderPosition.AFTERBEGIN);
       render(this.#filterComponent, this.#headerContainer);
+
+      if (this.#boardPoints[0] === undefined) {
+        return;
+      }
+      this.#headerInfoComponent = new HeaderInfoView(this.#boardPoints, this.#pointModel);
+      render(this.#headerInfoComponent, this.#infoContainer, RenderPosition.AFTERBEGIN);
 
     }
   };

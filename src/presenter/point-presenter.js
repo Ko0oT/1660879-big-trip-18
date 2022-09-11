@@ -1,6 +1,7 @@
 import PointView from '../view/point-view';
 import EditPointView from '../view/edit-point-view';
 import { render, replace, remove } from '../framework/render';
+import { UserAction, UpdateType } from '../mock/constants';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -38,7 +39,10 @@ export default class PointPresenter {
 
 
     this.#pointComponent.setFavoriteClickHandler(() => {
-      this.#changeData({...this.#point, isFavorite: !this.#point.isFavorite});
+      this.#changeData(
+        UserAction.UPDATE_POINT,
+        UpdateType.MINOR,
+        {...this.#point, isFavorite: !this.#point.isFavorite});
     });
 
     this.#pointComponent.setArrowClickHandler(() => {
@@ -46,12 +50,23 @@ export default class PointPresenter {
     });
 
     this.#editPointComponent.setFormSubmitHandler((task) => {
-      this.#changeData(task);
+      this.#changeData(
+        UserAction.UPDATE_POINT,
+        UpdateType.MINOR,
+        task);
       this.#replaceFormToPoint();
     });
 
     this.#editPointComponent.setFormArrowClickHandler(() => {
       this.#replaceFormToPoint();
+    });
+
+    this.#editPointComponent.setFormDeleteClickHandler(() => {
+      this.#changeData(
+        UserAction.DELETE_POINT,
+        UpdateType.MINOR,
+        point,
+      );
     });
 
 
