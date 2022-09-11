@@ -1,5 +1,7 @@
 import BoardPresenter from './presenter/board-presenter.js';
+import FilterPresenter from './presenter/filter-presenter.js';
 import PointModel from './model/point-model.js';
+import FilterModel from './model/filter-model.js';
 
 const siteHeaderElement = document.querySelector('.page-header');
 const siteFilterElement = siteHeaderElement.querySelector('.trip-controls__filters');
@@ -8,6 +10,10 @@ const siteMainElement = document.querySelector('.page-main');
 const siteEventsElement = siteMainElement.querySelector('.trip-events');
 
 const pointModel = new PointModel();
-const boardPresenter = new BoardPresenter(siteInfoElement, siteFilterElement, siteEventsElement, pointModel);
+const filterModel = new FilterModel();
+
+const boardPresenter = new BoardPresenter(siteInfoElement, siteEventsElement, pointModel, filterModel);
+const filterPresenter = new FilterPresenter(siteFilterElement, filterModel, pointModel);
 
 boardPresenter.init();
+filterPresenter.init();

@@ -79,4 +79,10 @@ const UserAction = {
   DELETE_POINT: 'DELETE_POINT',
 };
 
-export { descriptions, cities, pics, MIN_PICS_COUNT, MAX_PICS_COUNT, types, MIN_PRICE, MAX_PRICE, SortType, UpdateType, UserAction };
+const FilterType = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PAST: 'past',
+};
+
+export { descriptions, cities, pics, MIN_PICS_COUNT, MAX_PICS_COUNT, types, MIN_PRICE, MAX_PRICE, SortType, UpdateType, UserAction, FilterType };

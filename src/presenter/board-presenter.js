@@ -6,12 +6,13 @@ import HeaderPresenter from './header-presenter.js';
 import { remove, render } from '../framework/render.js';
 import { sortPointsByDay, sortPointsByPrice, sortPointsByTime } from '../utils.js';
 import { SortType, UpdateType, UserAction } from '../mock/constants.js';
+import { filter } from '../filter.js';
 
 export default class BoardPresenter {
   #infoContainer;
-  #headerContainer;
   #boardContainer;
   #pointModel;
+  #filterModel;
   #headerPresenter;
 
   #boardComponent = new BoardView();
@@ -22,22 +23,26 @@ export default class BoardPresenter {
   #currentSortType = SortType.DEFAULT;
 
 
-  constructor(infoContainer, headerContainer, boardContainer, pointModel) {
+  constructor(infoContainer, boardContainer, pointModel, filterModel) {
     this.#infoContainer = infoContainer;
-    this.#headerContainer = headerContainer;
     this.#boardContainer = boardContainer;
     this.#pointModel = pointModel;
+    this.#filterModel = filterModel;
     this.#pointModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   get points() {
+    const filterType = this.#filterModel.filter;
+    const points = this.#pointModel.points;
+    const filteredPoints = filter[filterType](points);
     switch (this.#currentSortType) {
       case SortType.PRICE:
-        return [...this.#pointModel.points].sort(sortPointsByPrice);
+        return filteredPoints.sort(sortPointsByPrice);
       case SortType.TIME:
-        return [...this.#pointModel.points].sort(sortPointsByTime);
+        return filteredPoints.sort(sortPointsByTime);
     }
-    return [...this.#pointModel.points].sort(sortPointsByDay);
+    return filteredPoints.sort(sortPointsByDay);
   }
 
   init = () => {
@@ -135,7 +140,7 @@ export default class BoardPresenter {
   #renderHeader = () => {
 
     if (this.points.length > 0) {
-      this.#headerPresenter = new HeaderPresenter(this.#pointModel, this.#infoContainer, this.#headerContainer);
+      this.#headerPresenter = new HeaderPresenter(this.#pointModel, this.#infoContainer);
       this.#headerPresenter.init(this.points);
     }
   };
