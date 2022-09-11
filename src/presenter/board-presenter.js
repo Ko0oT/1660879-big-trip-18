@@ -5,7 +5,7 @@ import PointPresenter from './point-presenter.js';
 import HeaderPresenter from './header-presenter.js';
 import { remove, render } from '../framework/render.js';
 import { sortPointsByDay, sortPointsByPrice, sortPointsByTime } from '../utils.js';
-import { SortType, UpdateType, UserAction } from '../mock/constants.js';
+import { SortType, UpdateType, UserAction, FilterType } from '../mock/constants.js';
 import { filter } from '../filter.js';
 
 export default class BoardPresenter {
@@ -14,6 +14,7 @@ export default class BoardPresenter {
   #pointModel;
   #filterModel;
   #headerPresenter;
+  #filterType = FilterType.EVERYTHING;
 
   #boardComponent = new BoardView();
   #noPointComponent = null;
@@ -33,9 +34,9 @@ export default class BoardPresenter {
   }
 
   get points() {
-    const filterType = this.#filterModel.filter;
+    this.#filterType = this.#filterModel.filter;
     const points = this.#pointModel.points;
-    const filteredPoints = filter[filterType](points);
+    const filteredPoints = filter[this.#filterType](points);
     switch (this.#currentSortType) {
       case SortType.PRICE:
         return filteredPoints.sort(sortPointsByPrice);
@@ -111,7 +112,10 @@ export default class BoardPresenter {
     this.#pointPresenter.clear();
 
     remove(this.#sortComponent);
-    remove(this.#noPointComponent);
+
+    if (this.#noPointComponent) {
+      remove(this.#noPointComponent);
+    }
 
     if (resetSortType) {
       this.#currentSortType = SortType.DEFAULT;
@@ -147,7 +151,7 @@ export default class BoardPresenter {
 
 
   #renderNoPoints = () => {
-    this.#noPointComponent = new NoPointsView();
+    this.#noPointComponent = new NoPointsView(this.#filterType);
     render(this.#noPointComponent, this.#boardContainer);
   };
 

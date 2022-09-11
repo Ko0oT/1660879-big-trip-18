@@ -1,18 +1,30 @@
 import AbstractView from '../framework/view/abstract-view.js';
+import { FilterType } from '../mock/constants.js';
 
-const createNoPointsTemplate = () => '<p class="trip-events__msg">Click New Event to create your first point</p>';
+const NoPointTextType = {
+  [FilterType.EVERYTHING]: 'Click New Event to create your first point',
+  [FilterType.PAST]: 'There are no past events now',
+  [FilterType.FUTURE]: 'There are no future events now'
+};
 
-/*
-Значение отображаемого текста зависит от выбранного фильтра:
-* Everthing – 'Click New Event to create your first point'
-* Past — 'There are no past events now';
-* Future — 'There are no future events now'.
 
-! реализуем на этапе работы с фильтрами
-*/
+const createNoPointsTemplate = (filterType) => {
+  const noPointTextValue = NoPointTextType[filterType];
+
+  return (
+    `<p class="trip-events__msg">${ noPointTextValue }</p>`
+  );
+};
 
 export default class NoPointsView extends AbstractView {
+  #filterType;
+
+  constructor(filterType) {
+    super();
+    this.#filterType = filterType;
+  }
+
   get template() {
-    return createNoPointsTemplate();
+    return createNoPointsTemplate(this.#filterType);
   }
 }
