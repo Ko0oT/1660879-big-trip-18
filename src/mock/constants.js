@@ -67,4 +67,22 @@ const SortType = {
   PRICE: 'price',
 };
 
-export { descriptions, cities, pics, MIN_PICS_COUNT, MAX_PICS_COUNT, types, MIN_PRICE, MAX_PRICE, SortType };
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+const UserAction = {
+  UPDATE_POINT: 'UPDATE_POINT',
+  ADD_POINT: 'ADD_POINT',
+  DELETE_POINT: 'DELETE_POINT',
+};
+
+const FilterType = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PAST: 'past',
+};
+
+export { descriptions, cities, pics, MIN_PICS_COUNT, MAX_PICS_COUNT, types, MIN_PRICE, MAX_PRICE, SortType, UpdateType, UserAction, FilterType };
