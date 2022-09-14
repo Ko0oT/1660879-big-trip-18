@@ -8,12 +8,24 @@ const siteFilterElement = siteHeaderElement.querySelector('.trip-controls__filte
 const siteInfoElement = siteHeaderElement.querySelector('.trip-main');
 const siteMainElement = document.querySelector('.page-main');
 const siteEventsElement = siteMainElement.querySelector('.trip-events');
+const newPointButton = document.querySelector('.trip-main__event-add-btn');
 
 const pointModel = new PointModel();
 const filterModel = new FilterModel();
 
 const boardPresenter = new BoardPresenter(siteInfoElement, siteEventsElement, pointModel, filterModel);
 const filterPresenter = new FilterPresenter(siteFilterElement, filterModel, pointModel);
+
+const handleNewPointFormClose = () => {
+  newPointButton.disabled = false;
+};
+
+const handleNewPointButtonClick = () => {
+  boardPresenter.createPoint(handleNewPointFormClose);
+  newPointButton.disabled = true;
+};
+
+newPointButton.addEventListener('click', handleNewPointButtonClick);
 
 boardPresenter.init();
 filterPresenter.init();

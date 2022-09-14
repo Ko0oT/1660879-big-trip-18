@@ -9,6 +9,17 @@ import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
 
+const BLANK_POINT = {
+  basePrice: 0,
+  dateFrom: new Date,
+  dateTo: new Date,
+  destination: 1, /*    $Destination.id$   */
+  id: null,
+  isFavorite: false,
+  offers: [1, 2, 3], /*       $Array<Offer.id>$     */
+  type: 'taxi'
+};
+
 const createEditPointTemplate = (pointModel, point) => {
   const destination = pointModel.getDestinationById(point.destination);
   const offersArray = pointModel.getOffersById(point);
@@ -59,7 +70,7 @@ const createEditPointTemplate = (pointModel, point) => {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${ basePrice }">
+            <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${ basePrice }">
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit" ${ isSubmitEnabled() ? '' : 'disabled' }>Save</button>
@@ -82,7 +93,7 @@ export default class EditPointView extends AbstractStatefulView {
   #startDatepicker = null;
   #endDatepicker = null;
 
-  constructor(pointModel, point) {
+  constructor(pointModel, point = BLANK_POINT) {
     super();
     this.#pointModel = pointModel;
     this._state = EditPointView.parsePointToState(point);
