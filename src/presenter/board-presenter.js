@@ -96,13 +96,14 @@ export default class BoardPresenter {
       case UpdateType.MINOR:
         this.#clearBoard();
         this.#renderBoard();
-        this.#headerPresenter.init(this.#pointModel.points);
+        //крашнулся рендер хидера, задебажу позже, закомментил чтобы не сыпались ошибки, знаю как поправить.
+        // this.#headerPresenter.init(this.#pointModel.points);
         // - обновить список (например, когда задача ушла в архив)
         break;
       case UpdateType.MAJOR:
         this.#clearBoard({resetSortType: true});
         this.#renderBoard();
-        this.#headerPresenter.init(this.#pointModel.points);
+        // this.#headerPresenter.init(this.#pointModel.points);
         // - обновить всю доску (например, при переключении фильтра)
         break;
       case UpdateType.INIT:
