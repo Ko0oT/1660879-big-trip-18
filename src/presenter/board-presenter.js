@@ -1,12 +1,13 @@
 import BoardView from '../view/board-view.js';
 import NoPointsView from '../view/no-points-view.js';
 import SortView from '../view/sort-view.js';
+import LoadingView from '../view/loading-view.js';
 import PointPresenter from './point-presenter.js';
 import HeaderPresenter from './header-presenter.js';
 import NewPointPresenter from './new-point-presenter.js';
 import { remove, render } from '../framework/render.js';
 import { sortPointsByDay, sortPointsByPrice, sortPointsByTime } from '../utils.js';
-import { SortType, UpdateType, UserAction, FilterType } from '../mock/constants.js';
+import { SortType, UpdateType, UserAction, FilterType } from '../constants.js';
 import { filter } from '../filter.js';
 
 export default class BoardPresenter {
@@ -19,11 +20,13 @@ export default class BoardPresenter {
   #filterType = FilterType.EVERYTHING;
 
   #boardComponent = new BoardView();
+  #loadingComponent = new LoadingView();
   #noPointComponent = null;
   #sortComponent = null;
 
   #pointPresenter = new Map();
   #currentSortType = SortType.DEFAULT;
+  #isLoading = true;
 
 
   constructor(infoContainer, boardContainer, pointModel, filterModel) {
@@ -102,6 +105,11 @@ export default class BoardPresenter {
         this.#headerPresenter.init(this.#pointModel.points);
         // - обновить всю доску (например, при переключении фильтра)
         break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderBoard();
+        break;
     }
   };
 
@@ -115,7 +123,7 @@ export default class BoardPresenter {
 
   #renderPoints = (points) => {
 
-    points.forEach((point) => this.#renderPoint(point));
+    points.forEach(this.#renderPoint);
 
   };
 
@@ -126,6 +134,7 @@ export default class BoardPresenter {
     this.#pointPresenter.clear();
 
     remove(this.#sortComponent);
+    remove(this.#loadingComponent);
 
     if (this.#noPointComponent) {
       remove(this.#noPointComponent);
@@ -138,6 +147,15 @@ export default class BoardPresenter {
   };
 
   #renderBoard = () => {
+    render(this.#boardComponent, this.#boardContainer);
+
+    if (this.#isLoading) {
+
+      this.#renderLoading();
+      return;
+
+    }
+
     const points = this.points;
     const pointsCount = points.length;
 
@@ -148,7 +166,7 @@ export default class BoardPresenter {
 
     }
 
-    render(this.#boardComponent, this.#boardContainer);
+
     this.#renderSort();
     this.#renderPoints(points);
 
@@ -163,6 +181,11 @@ export default class BoardPresenter {
     }
   };
 
+
+  #renderLoading = () => {
+    render(this.#loadingComponent, this.#boardContainer);
+
+  };
 
   #renderNoPoints = () => {
     this.#noPointComponent = new NoPointsView(this.#filterType);

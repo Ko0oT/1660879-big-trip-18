@@ -1,57 +1,17 @@
 import Observable from '../framework/observable.js';
-import { generatePoint } from '../mock/point.js';
-import { offers } from '../mock/offer.js';
-import { generateDestination } from '../mock/destination.js';
+import { UpdateType } from '../constants.js';
 
 export default class PointModel extends Observable {
-  #points = Array.from({length: 4}, generatePoint);
-  // Для тестирования! Не удалять!
+  #pointsApiService = null;
 
-  // #points = [
-  //   {
-  //     basePrice: 4000,
-  //     dateFrom: '2019-07-07T22:55:56.845Z',
-  //     dateTo: '2019-07-11T11:22:13.375Z',
-  //     destination: 1, /*    $Destination.id$   */
-  //     id: 1,
-  //     isFavorite: true,
-  //     offers: [1, 2, 3], /*       $Array<Offer.id>$     */
-  //     type: 'taxi'
-  //   },
-  //   {
-  //     basePrice: 1000,
-  //     dateFrom: '2019-07-10T22:55:56.845Z',
-  //     dateTo: '2019-07-21T11:22:13.375Z',
-  //     destination: 3, /*    $Destination.id$   */
-  //     id: 3,
-  //     isFavorite: true,
-  //     offers: [1, 2, 3], /*       $Array<Offer.id>$     */
-  //     type: 'taxi'
-  //   },
-  //   {
-  //     basePrice: 2000,
-  //     dateFrom: '2019-07-01T22:55:56.845Z',
-  //     dateTo: '2019-08-11T11:22:13.375Z',
-  //     destination: 4, /*    $Destination.id$   */
-  //     id: 4,
-  //     isFavorite: true,
-  //     offers: [1, 2, 3], /*       $Array<Offer.id>$     */
-  //     type: 'taxi'
-  //   },
-  //   {
-  //     basePrice: 3000,
-  //     dateFrom: '2019-08-15T22:55:56.845Z',
-  //     dateTo: '2019-08-19T11:22:13.375Z',
-  //     destination: 2, /*    $Destination.id$   */
-  //     id: 2,
-  //     isFavorite: true,
-  //     offers: [1, 2, 3], /*       $Array<Offer.id>$     */
-  //     type: 'taxi'
-  //   },
-  // ];
+  constructor(pointsApiService) {
+    super();
+    this.#pointsApiService = pointsApiService;
+  }
 
-  #offers = offers;
-  #destinations = Array.from({length: 20}, generateDestination);
+  #points = [];
+  #offers = [];
+  #destinations = [];
 
 
   get points () {
@@ -67,6 +27,20 @@ export default class PointModel extends Observable {
   get destinations () {
     return this.#destinations;
   }
+
+  init = async () => {
+    try {
+      const points = await this.#pointsApiService.points;
+      this.#points = points.map(this.#adaptToClient);
+      this.#offers = await this.#pointsApiService.offers;
+      this.#destinations = await this.#pointsApiService.destinations;
+    } catch(err) {
+      this.#points = [];
+      this.#offers = [];
+      this.#destinations = [];
+    }
+    this._notify(UpdateType.INIT);
+  };
 
 
   updatePoint = (updateType, update) => {
@@ -136,4 +110,21 @@ export default class PointModel extends Observable {
     const {id} = this.#destinations.find((it) => it.name === destinationName);
     return id;
   }
+
+  #adaptToClient = (point) => {
+    const adaptedPoint = {...point,
+      basePrice: point['base_price'],
+      dateFrom: point['date_from'] !== null ? new Date(point['date_from']) : point['date_from'],
+      dateTo: point['date_to'] !== null ? new Date(point['date_to']) : point['date_to'],
+      isFavorite: point['is_favorite']
+    };
+
+    delete adaptedPoint['base_price'];
+    delete adaptedPoint['date_from'];
+    delete adaptedPoint['date_to'];
+    delete adaptedPoint['is_favorite'];
+
+    return adaptedPoint;
+  };
+
 }

@@ -1,6 +1,6 @@
 import EditPointView from '../view/edit-point-view';
 import { render, remove, RenderPosition } from '../framework/render';
-import { UserAction, UpdateType } from '../mock/constants';
+import { UserAction, UpdateType } from '../constants';
 import { nanoid } from 'nanoid';
 
 

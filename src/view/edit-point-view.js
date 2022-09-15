@@ -1,6 +1,6 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 import { humanizeDateAndTime, getTimeDiff } from '../utils.js';
-import { types } from '../mock/constants.js';
+import { types } from '../constants.js';
 import { createDestinationTemplate } from './edit-point-destination-template.js';
 import { createAvaliableOffersTemplate } from './edit-point-avaliable-offers-template.js';
 import { createPointsMenuTemplate } from './edit-point-points-menu-template.js';
