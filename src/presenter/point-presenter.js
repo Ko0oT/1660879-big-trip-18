@@ -1,7 +1,7 @@
 import PointView from '../view/point-view';
 import EditPointView from '../view/edit-point-view';
 import { render, replace, remove } from '../framework/render';
-import { UserAction, UpdateType } from '../mock/constants';
+import { UserAction, UpdateType } from '../constants';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
