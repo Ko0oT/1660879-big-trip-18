@@ -14,7 +14,6 @@ const BLANK_POINT = {
   dateFrom: new Date,
   dateTo: new Date,
   destination: 1, /*    $Destination.id$   */
-  id: null,
   isFavorite: false,
   offers: [1, 2, 3], /*       $Array<Offer.id>$     */
   type: 'taxi'
