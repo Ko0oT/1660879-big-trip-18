@@ -1,8 +1,8 @@
-const createAvaliableOffersTemplate = (offers) => {
+const createAvaliableOffersTemplate = (offers, isDisabled) => {
 
   const template = offers.reduce((prev, cur, index) => prev.concat(`
   <div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${ index }" type="checkbox" name="event-offer-${ index }" checked>
+    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${ index }" type="checkbox" name="event-offer-${ index }" checked ${ isDisabled ? 'disabled' : '' }>
       <label class="event__offer-label" for="event-offer-${ index }">
       <span class="event__offer-title">${ cur.title }</span>
       &plus;&euro;&nbsp;

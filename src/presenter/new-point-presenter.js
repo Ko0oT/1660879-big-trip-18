@@ -34,7 +34,6 @@ export default class NewPointPresenter {
         UpdateType.MINOR,
         point,
       );
-      this.destroy();
     });
 
     this.#editPointComponent.setFormArrowClickHandler(() => {
@@ -65,6 +64,24 @@ export default class NewPointPresenter {
     document.removeEventListener('keydown', this.#onEscKeyDownHandler);
   };
 
+  setSaving = () => {
+    this.#editPointComponent.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  };
+
+  setAborting = () => {
+    const resetFormState = () => {
+      this.#editPointComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#editPointComponent.shake(resetFormState);
+  };
 
   #onEscKeyDownHandler = (evt) => {
     if (evt.key === 'Esc' || evt.key === 'Escape') {
