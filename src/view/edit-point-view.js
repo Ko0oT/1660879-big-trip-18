@@ -162,8 +162,10 @@ export default class EditPointView extends AbstractStatefulView {
 
   #changePointTypeHandler = (evt) => {
     if (evt.target.tagName === 'INPUT') {
+      this.#offers.clear();
       this.updateElement({
-        type: evt.target.value
+        type: evt.target.value,
+        offers: []
       });
     }
   };
