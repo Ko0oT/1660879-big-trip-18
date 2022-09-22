@@ -61,7 +61,6 @@ export default class BoardPresenter {
 
   init = () => {
     this.#renderBoard();
-    this.#renderHeader();
   };
 
   createPoint = (callback) => {
@@ -71,7 +70,7 @@ export default class BoardPresenter {
   };
 
 
-  #handleMockChange = () => {
+  #handleModeChange = () => {
     this.#newPointPresenter.destroy();
     this.#pointPresenter.forEach((presenter) => presenter.resetView());
   };
@@ -116,21 +115,15 @@ export default class BoardPresenter {
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
       case UpdateType.PATCH:
-        // - обновить часть списка (например, когда поменялось описание)
         this.#pointPresenter.get(data.id).init(data);
         break;
       case UpdateType.MINOR:
         this.#clearBoard();
         this.#renderBoard();
-        //крашнулся рендер хидера, задебажу позже, закомментил чтобы не сыпались ошибки, знаю как поправить.
-        // this.#headerPresenter.init(this.#pointModel.points);
-        // - обновить список (например, когда задача ушла в архив)
         break;
       case UpdateType.MAJOR:
         this.#clearBoard({resetSortType: true});
         this.#renderBoard();
-        // this.#headerPresenter.init(this.#pointModel.points);
-        // - обновить всю доску (например, при переключении фильтра)
         break;
       case UpdateType.INIT:
         this.#isLoading = false;
@@ -143,7 +136,7 @@ export default class BoardPresenter {
 
   #renderPoint = (point) => {
 
-    const pointPresenter = new PointPresenter(this.#pointModel, this.#boardComponent.element, this.#handleViewAction, this.#handleMockChange);
+    const pointPresenter = new PointPresenter(this.#pointModel, this.#boardComponent.element, this.#handleViewAction, this.#handleModeChange);
     pointPresenter.init(point);
     this.#pointPresenter.set(point.id, pointPresenter);
   };
@@ -157,6 +150,7 @@ export default class BoardPresenter {
   #clearBoard = ({resetSortType = false} = {}) => {
 
     this.#newPointPresenter.destroy();
+    this.#headerPresenter.destroy();
     this.#pointPresenter.forEach((presenter) => presenter.destroy());
     this.#pointPresenter.clear();
 
@@ -196,18 +190,17 @@ export default class BoardPresenter {
 
     this.#renderSort();
     this.#renderPoints(points);
+    this.#renderHeader();
 
   };
-
 
   #renderHeader = () => {
 
     if (this.points.length > 0) {
       this.#headerPresenter = new HeaderPresenter(this.#pointModel, this.#infoContainer);
-      this.#headerPresenter.init(this.points);
+      this.#headerPresenter.init();
     }
   };
-
 
   #renderLoading = () => {
     render(this.#loadingComponent, this.#boardContainer);

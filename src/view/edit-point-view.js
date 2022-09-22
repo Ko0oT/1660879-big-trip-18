@@ -10,20 +10,20 @@ import 'flatpickr/dist/flatpickr.min.css';
 
 
 const BLANK_POINT = {
-  basePrice: 0,
+  basePrice: 10,
   dateFrom: new Date,
   dateTo: new Date,
-  destination: 1, /*    $Destination.id$   */
+  destination: 1,
   isFavorite: false,
-  offers: [1, 2, 3], /*       $Array<Offer.id>$     */
+  offers: [],
   type: 'taxi'
 };
 
 const createEditPointTemplate = (pointModel, point) => {
   const destination = pointModel.getDestinationById(point.destination);
-  const offersArray = pointModel.getOffersById(point);
+  const allOffersByType = pointModel.getAllOffersByType(point);
   const { description, pictures } = destination;
-  const { type, dateFrom, dateTo, basePrice, isDisabled, isSaving, isDeleting } = point;
+  const { type, dateFrom, dateTo, basePrice, offers, isDisabled, isSaving, isDeleting } = point;
   const destinations = [...pointModel.destinations];
 
   const isSubmitEnabled = () => getTimeDiff(dateFrom, dateTo);
@@ -69,7 +69,7 @@ const createEditPointTemplate = (pointModel, point) => {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${ basePrice }" ${ isDisabled ? 'disabled' : '' } >
+            <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" min="1" value="${ basePrice }" ${ isDisabled ? 'disabled' : '' } >
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit" ${ isSubmitEnabled() ? '' : 'disabled' } ${ isDisabled ? 'disabled' : '' }> ${ isSaving ? 'Saving...' : 'Save'} </button>
@@ -79,7 +79,7 @@ const createEditPointTemplate = (pointModel, point) => {
           </button>
         </header>
         <section class="event__details">
-              ${ offersArray[0] ? createAvaliableOffersTemplate(offersArray, isDisabled) : '' }
+              ${ allOffersByType[0] ? createAvaliableOffersTemplate(allOffersByType, offers) : '' }
               ${ description ? createDestinationTemplate(description, pictures) : '' }
         </section>
       </form>
@@ -91,6 +91,7 @@ export default class EditPointView extends AbstractStatefulView {
   #pointModel;
   #startDatepicker = null;
   #endDatepicker = null;
+  #offers = null;
 
   constructor(pointModel, point = BLANK_POINT) {
     super();
@@ -99,7 +100,7 @@ export default class EditPointView extends AbstractStatefulView {
     this.#setInnerHandlers();
     this.#setStartDatepicker();
     this.#setEndDatepicker();
-
+    this.#offers = new Set(this._state.offers);
   }
 
   get template() {
@@ -193,6 +194,25 @@ export default class EditPointView extends AbstractStatefulView {
     });
   };
 
+  #formOfferClickHandler = (evt) => {
+    if (evt.target.tagName === 'INPUT') {
+      const pointId = evt.target.id;
+      const id = parseInt(pointId.match(/\d+/), 10);
+
+      if (this.#offers.has(id)) {
+        this.#offers.delete(id);
+        this._setState({
+          offers: Array.from(this.#offers)
+        });
+      } else {
+        this._setState({
+          offers: Array.from(this.#offers.add(id))
+        });
+      }
+    }
+  };
+
+
   #setStartDatepicker = () => {
     this.#startDatepicker = flatpickr(
       this.element.querySelector('#event-start-time-1'),
@@ -224,6 +244,7 @@ export default class EditPointView extends AbstractStatefulView {
     this.element.querySelector('.event__type-group').addEventListener('click', this.#changePointTypeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('input', this.#changeDestinationHandler);
     this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHandler);
+    this.element.querySelector('.event__details').addEventListener('change', this.#formOfferClickHandler);
   };
 
   static parsePointToState = (point) => ({...point,

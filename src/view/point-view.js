@@ -1,11 +1,11 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import { humanizeDate, humanizeTime, getTimeDiff, ucFirst } from '../utils.js';
-import { createChosenOffersTemplate } from './point-chosen-offers-template.js';
+import { createCheckedOffersTemplate } from './point-chosen-offers-template.js';
 
 
 const createPointTemplate = (pointModel, point) => {
   const destination = pointModel.getDestinationById(point.destination);
-  const offersArray = pointModel.getOffersById(point);
+  const checkedOffers = pointModel.getСheckedOffers(point);
   const { basePrice, dateFrom, dateTo, isFavorite, type } = point;
 
   const setFavorite = isFavorite
@@ -31,7 +31,7 @@ const createPointTemplate = (pointModel, point) => {
       <p class="event__price">
         &euro;&nbsp;<span class="event__price-value">${ basePrice }</span>
       </p>
-        ${ createChosenOffersTemplate(offersArray) }
+        ${ createCheckedOffersTemplate(checkedOffers) }
       <button class="event__favorite-btn ${ setFavorite }" type="button">
         <span class="visually-hidden">Add to favorite</span>
         <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
