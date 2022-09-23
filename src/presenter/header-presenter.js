@@ -14,26 +14,27 @@ export default class HeaderPresenter {
     this.#infoContainer = infoContainer;
   }
 
-  init = (boardPoints) => {
+  init = () => {
 
-    this.#boardPoints = boardPoints.sort(sortPointsByDay);
-
-    if(this.#headerInfoComponent === null) {
-      this.#headerInfoComponent = new HeaderInfoView(this.#boardPoints, this.#pointModel);
-
-      render(this.#headerInfoComponent, this.#infoContainer, RenderPosition.AFTERBEGIN);
-
-    } else {
-
-      remove(this.#headerInfoComponent);
-
-      if (this.#boardPoints[0] === undefined) {
-        return;
-      }
-      this.#headerInfoComponent = new HeaderInfoView(this.#boardPoints, this.#pointModel);
-      render(this.#headerInfoComponent, this.#infoContainer, RenderPosition.AFTERBEGIN);
-
+    if(this.#headerInfoComponent !== null) {
+      return;
     }
+
+    this.#boardPoints = this.#pointModel.points.sort(sortPointsByDay);
+
+    this.#headerInfoComponent = new HeaderInfoView(this.#boardPoints, this.#pointModel);
+
+    render(this.#headerInfoComponent, this.#infoContainer, RenderPosition.AFTERBEGIN);
+
+  };
+
+  destroy = () => {
+    if(this.#headerInfoComponent === null) {
+      return;
+    }
+
+    remove(this.#headerInfoComponent);
+    this.#headerInfoComponent = null;
   };
 
 }

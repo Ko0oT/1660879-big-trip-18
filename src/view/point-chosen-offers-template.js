@@ -1,4 +1,4 @@
-const createChosenOffersTemplate = (offers) => {
+const createCheckedOffersTemplate = (offers) => {
 
   const template = offers.reduce((prev, cur) => prev.concat(
     `<li class="event__offer">
@@ -16,5 +16,5 @@ const createChosenOffersTemplate = (offers) => {
 
 };
 
-export { createChosenOffersTemplate };
+export { createCheckedOffersTemplate };
 
