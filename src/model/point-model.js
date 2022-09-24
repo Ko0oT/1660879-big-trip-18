@@ -1,8 +1,9 @@
 import Observable from '../framework/observable.js';
-import { UpdateType } from '../constants.js';
-
+import { UpdateType, TimeLimit } from '../constants.js';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 export default class PointModel extends Observable {
   #pointsApiService = null;
+  #uiBlocker = new UiBlocker(TimeLimit.LOWER_LIMIT,TimeLimit.UPPER_LIMIT);
 
   constructor(pointsApiService) {
     super();
@@ -30,15 +31,15 @@ export default class PointModel extends Observable {
 
   init = async () => {
     try {
+      this.#uiBlocker.block();
       const points = await this.#pointsApiService.points;
       this.#points = points.map(this.#adaptToClient);
       this.#offers = await this.#pointsApiService.offers;
       this.#destinations = await this.#pointsApiService.destinations;
     } catch(err) {
-      this.#points = [];
-      this.#offers = [];
-      this.#destinations = [];
+      throw new Error ('Server not responding');
     }
+    this.#uiBlocker.unblock();
     this._notify(UpdateType.INIT);
   };
 

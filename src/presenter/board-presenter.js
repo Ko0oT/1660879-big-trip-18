@@ -8,20 +8,16 @@ import NewPointPresenter from './new-point-presenter.js';
 import { remove, render } from '../framework/render.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import { sortPointsByDay, sortPointsByPrice, sortPointsByTime } from '../utils.js';
-import { SortType, UpdateType, UserAction, FilterType } from '../constants.js';
+import { SortType, UpdateType, UserAction, FilterType, TimeLimit } from '../constants.js';
 import { filter } from '../filter.js';
 
-const TimeLimit = {
-  LOWER_LIMIT: 350,
-  UPPER_LIMIT: 1000,
-};
 export default class BoardPresenter {
   #infoContainer;
   #boardContainer;
   #pointModel;
   #filterModel;
-  #headerPresenter;
-  #newPointPresenter;
+  #headerPresenter = null;
+  #newPointPresenter = null;
   #filterType = FilterType.EVERYTHING;
 
   #boardComponent = new BoardView();
@@ -150,7 +146,6 @@ export default class BoardPresenter {
   #clearBoard = ({resetSortType = false} = {}) => {
 
     this.#newPointPresenter.destroy();
-    this.#headerPresenter.destroy();
     this.#pointPresenter.forEach((presenter) => presenter.destroy());
     this.#pointPresenter.clear();
 
@@ -165,6 +160,9 @@ export default class BoardPresenter {
       this.#currentSortType = SortType.DEFAULT;
     }
 
+    if (this.#headerPresenter) {
+      this.#headerPresenter.destroy();
+    }
   };
 
   #renderBoard = () => {
